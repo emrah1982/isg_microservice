@@ -1,0 +1,1598 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "ActivitiesService",
+    "version": "1.0"
+  },
+  "paths": {
+    "/api/CorrectiveActions": {
+      "get": {
+        "tags": [
+          "CorrectiveActions"
+        ],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "priority",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "CorrectiveActions"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CorrectiveAction"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CorrectiveAction"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CorrectiveAction"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/CorrectiveActions/{id}": {
+      "get": {
+        "tags": [
+          "CorrectiveActions"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "CorrectiveActions"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CorrectiveAction"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CorrectiveAction"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CorrectiveAction"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "CorrectiveActions"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/Penalties": {
+      "get": {
+        "tags": [
+          "Penalties"
+        ],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "personnelId",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Penalties"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Penalty"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Penalty"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Penalty"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/Penalties/{id}": {
+      "get": {
+        "tags": [
+          "Penalties"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Penalties"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Penalty"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Penalty"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Penalty"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Penalties"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/Personnel/search/{tcNo}": {
+      "get": {
+        "tags": [
+          "Personnel"
+        ],
+        "parameters": [
+          {
+            "name": "tcNo",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/Personnel/companies": {
+      "get": {
+        "tags": [
+          "Personnel"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/Photos/{entityType}/{entityId}": {
+      "get": {
+        "tags": [
+          "Photos"
+        ],
+        "parameters": [
+          {
+            "name": "entityType",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Photos"
+        ],
+        "parameters": [
+          {
+            "name": "entityType",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ContentType": {
+                    "type": "string"
+                  },
+                  "ContentDisposition": {
+                    "type": "string"
+                  },
+                  "Headers": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "Length": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "Name": {
+                    "type": "string"
+                  },
+                  "FileName": {
+                    "type": "string"
+                  },
+                  "caption": {
+                    "type": "string"
+                  }
+                }
+              },
+              "encoding": {
+                "ContentType": {
+                  "style": "form"
+                },
+                "ContentDisposition": {
+                  "style": "form"
+                },
+                "Headers": {
+                  "style": "form"
+                },
+                "Length": {
+                  "style": "form"
+                },
+                "Name": {
+                  "style": "form"
+                },
+                "FileName": {
+                  "style": "form"
+                },
+                "caption": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/Photos/{photoId}": {
+      "delete": {
+        "tags": [
+          "Photos"
+        ],
+        "parameters": [
+          {
+            "name": "photoId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/PreventiveActions": {
+      "get": {
+        "tags": [
+          "PreventiveActions"
+        ],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "priority",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "PreventiveActions"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PreventiveAction"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PreventiveAction"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/PreventiveAction"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/PreventiveActions/{id}": {
+      "get": {
+        "tags": [
+          "PreventiveActions"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "PreventiveActions"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PreventiveAction"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PreventiveAction"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/PreventiveAction"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "PreventiveActions"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/Warnings": {
+      "get": {
+        "tags": [
+          "Warnings"
+        ],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "personnelId",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Warnings"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Warning"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Warning"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Warning"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/Warnings/{id}": {
+      "get": {
+        "tags": [
+          "Warnings"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Warnings"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Warning"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Warning"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Warning"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Warnings"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CorrectiveAction": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isgReportId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "observationId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "incidentId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "actionType": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "priority": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "assignedToPersonnelId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "assignedToPersonName": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdByPersonnelId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "createdByPersonName": {
+            "type": "string",
+            "nullable": true
+          },
+          "plannedStartDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "plannedCompletionDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "actualStartDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "actualCompletionDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "estimatedCost": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "actualCost": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "resources": {
+            "type": "string",
+            "nullable": true
+          },
+          "completionNotes": {
+            "type": "string",
+            "nullable": true
+          },
+          "effectivenessEvaluation": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isgReport": {
+            "$ref": "#/components/schemas/IsgReport"
+          },
+          "observation": {
+            "$ref": "#/components/schemas/IsgObservation"
+          },
+          "incident": {
+            "$ref": "#/components/schemas/IsgIncident"
+          }
+        },
+        "additionalProperties": false
+      },
+      "IsgIncident": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isgReportId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "incidentType": {
+            "type": "string",
+            "nullable": true
+          },
+          "severity": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "location": {
+            "type": "string",
+            "nullable": true
+          },
+          "incidentDateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "affectedPersonnelId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "affectedPersonName": {
+            "type": "string",
+            "nullable": true
+          },
+          "injuryType": {
+            "type": "string",
+            "nullable": true
+          },
+          "immediateActions": {
+            "type": "string",
+            "nullable": true
+          },
+          "rootCause": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "investigatorId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "investigatorName": {
+            "type": "string",
+            "nullable": true
+          },
+          "investigationCompletedDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "finalReport": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isgReport": {
+            "$ref": "#/components/schemas/IsgReport"
+          }
+        },
+        "additionalProperties": false
+      },
+      "IsgObservation": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isgReportId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "observationType": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "location": {
+            "type": "string",
+            "nullable": true
+          },
+          "riskLevel": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "responsiblePersonnelId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "responsiblePersonName": {
+            "type": "string",
+            "nullable": true
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "completedDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "completionNotes": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isgReport": {
+            "$ref": "#/components/schemas/IsgReport"
+          }
+        },
+        "additionalProperties": false
+      },
+      "IsgReport": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "reportNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "reportDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "siteName": {
+            "type": "string",
+            "nullable": true
+          },
+          "location": {
+            "type": "string",
+            "nullable": true
+          },
+          "personnelId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "preparedBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "weatherCondition": {
+            "type": "string",
+            "nullable": true
+          },
+          "workingConditions": {
+            "type": "string",
+            "nullable": true
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "observations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IsgObservation"
+            },
+            "nullable": true
+          },
+          "incidents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IsgIncident"
+            },
+            "nullable": true
+          },
+          "correctiveActions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CorrectiveAction"
+            },
+            "nullable": true
+          },
+          "preventiveActions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PreventiveAction"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Penalty": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "penaltyNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "personnelId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "personnelName": {
+            "type": "string",
+            "nullable": true
+          },
+          "personnelTcNo": {
+            "type": "string",
+            "nullable": true
+          },
+          "personnelPosition": {
+            "type": "string",
+            "nullable": true
+          },
+          "companyId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "companyName": {
+            "type": "string",
+            "nullable": true
+          },
+          "issuedByPersonnelId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "issuedByPersonName": {
+            "type": "string",
+            "nullable": true
+          },
+          "penaltyDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "penaltyType": {
+            "type": "string",
+            "nullable": true
+          },
+          "category": {
+            "type": "string",
+            "nullable": true
+          },
+          "violationType": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "location": {
+            "type": "string",
+            "nullable": true
+          },
+          "incidentDateTime": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "severity": {
+            "type": "string",
+            "nullable": true
+          },
+          "financialPenalty": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "suspensionDays": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "suspensionStartDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "suspensionEndDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "legalBasis": {
+            "type": "string",
+            "nullable": true
+          },
+          "witnesses": {
+            "type": "string",
+            "nullable": true
+          },
+          "evidence": {
+            "type": "string",
+            "nullable": true
+          },
+          "defenseStatement": {
+            "type": "string",
+            "nullable": true
+          },
+          "defenseDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "decisionReason": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "isAppealed": {
+            "type": "boolean"
+          },
+          "appealDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "appealReason": {
+            "type": "string",
+            "nullable": true
+          },
+          "appealDecision": {
+            "type": "string",
+            "nullable": true
+          },
+          "appealDecisionDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "attachmentPath": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PreventiveAction": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isgReportId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "actionType": {
+            "type": "string",
+            "nullable": true
+          },
+          "category": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "objective": {
+            "type": "string",
+            "nullable": true
+          },
+          "priority": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "assignedToPersonnelId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "assignedToPersonName": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdByPersonnelId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "createdByPersonName": {
+            "type": "string",
+            "nullable": true
+          },
+          "plannedStartDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "plannedCompletionDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "actualStartDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "actualCompletionDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "estimatedCost": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "actualCost": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "resources": {
+            "type": "string",
+            "nullable": true
+          },
+          "successMetrics": {
+            "type": "string",
+            "nullable": true
+          },
+          "completionNotes": {
+            "type": "string",
+            "nullable": true
+          },
+          "effectivenessEvaluation": {
+            "type": "string",
+            "nullable": true
+          },
+          "isRecurring": {
+            "type": "boolean"
+          },
+          "recurrencePattern": {
+            "type": "string",
+            "nullable": true
+          },
+          "nextScheduledDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isgReport": {
+            "$ref": "#/components/schemas/IsgReport"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Warning": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "warningNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "personnelId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "personnelName": {
+            "type": "string",
+            "nullable": true
+          },
+          "personnelTcNo": {
+            "type": "string",
+            "nullable": true
+          },
+          "personnelPosition": {
+            "type": "string",
+            "nullable": true
+          },
+          "companyId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "companyName": {
+            "type": "string",
+            "nullable": true
+          },
+          "issuedByPersonnelId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "issuedByPersonName": {
+            "type": "string",
+            "nullable": true
+          },
+          "warningDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "warningType": {
+            "type": "string",
+            "nullable": true
+          },
+          "category": {
+            "type": "string",
+            "nullable": true
+          },
+          "violationType": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "location": {
+            "type": "string",
+            "nullable": true
+          },
+          "incidentDateTime": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "witnesses": {
+            "type": "string",
+            "nullable": true
+          },
+          "immediateActions": {
+            "type": "string",
+            "nullable": true
+          },
+          "expectedImprovement": {
+            "type": "string",
+            "nullable": true
+          },
+          "followUpDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "followUpNotes": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "isAcknowledged": {
+            "type": "boolean"
+          },
+          "acknowledgedDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "personnelResponse": {
+            "type": "string",
+            "nullable": true
+          },
+          "attachmentPath": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

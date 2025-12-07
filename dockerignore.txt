@@ -1,0 +1,14 @@
+# Prevent copying build outputs into Docker build context
+**/bin/
+**/obj/
+**/.vs/
+**/.vscode/
+**/node_modules/
+**/*.user
+**/*.swp
+**/*.suo
+**/*.log
+**/*.tmp
+**/*.DS_Store
+**/.idea/
+**/.env

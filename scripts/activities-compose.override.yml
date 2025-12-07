@@ -1,0 +1,47 @@
+version: '3.9'
+
+services:
+  activities-service:
+    build:
+      context: ../src
+      dockerfile: ActivitiesService/Dockerfile
+    image: isg/activities-service:latest
+    container_name: activities-service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ACTIVITIES_DB=${ACTIVITIES_DB:-server=activities_db;port=3306;database=activities_db;user=root;password=isg_password_2024}
+    ports:
+      - "8091:8091"
+    depends_on:
+      - activities_db
+    restart: unless-stopped
+    volumes:
+      - activities_uploads:/app/wwwroot/uploads
+
+  activities_db:
+    image: mysql:8.0
+    container_name: activities_db
+    environment:
+      - MYSQL_ROOT_PASSWORD=isg_password_2024
+      - MYSQL_DATABASE=activities_db
+      - MYSQL_USER=isg_user
+      - MYSQL_PASSWORD=isg_password_2024
+    # Expose MySQL for host access (choose an available host port)
+    ports:
+      - "3315:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-pisg_password_2024"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+    volumes:
+      - activities_db_data:/var/lib/mysql
+      - ./scripts/init-activities-db.sql:/docker-entrypoint-initdb.d/init-activities-db.sql:ro
+      - ./scripts/alter-activities-db.sql:/docker-entrypoint-initdb.d/zzz-alter-activities-db.sql:ro
+
+volumes:
+  activities_uploads:
+    driver: local
+  activities_db_data:
+    driver: local

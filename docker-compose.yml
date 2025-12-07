@@ -1,0 +1,577 @@
+services:
+  # MySQL Database for Users Service
+  users_db:
+    image: mysql:8.0
+    container_name: users_db
+    environment:
+      MYSQL_ROOT_PASSWORD: isg_password_2024
+      MYSQL_DATABASE: users_db
+      MYSQL_USER: isg_user
+      MYSQL_PASSWORD: isg_password_2024
+    ports:
+      - "3311:3306"
+    volumes:
+      - users_db_data:/var/lib/mysql
+      - ./scripts/init-users-db.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - isg_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # MySQL Database for Legislation Service
+  legislation_db:
+    image: mysql:8.0
+    container_name: legislation_db
+    environment:
+      MYSQL_ROOT_PASSWORD: isg_password_2024
+      MYSQL_DATABASE: legislation_db
+      MYSQL_USER: isg_user
+      MYSQL_PASSWORD: isg_password_2024
+    ports:
+      - "3315:3306"
+    volumes:
+      - legislation_db_data:/var/lib/mysql
+      - ./scripts/init-legislation-db.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - isg_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # MySQL Database for Personnel Service
+  personnel_db:
+    image: mysql:8.0
+    container_name: personnel_db
+    environment:
+      MYSQL_ROOT_PASSWORD: isg_password_2024
+      MYSQL_DATABASE: personnel_db
+      MYSQL_USER: isg_user
+      MYSQL_PASSWORD: isg_password_2024
+    ports:
+      - "3313:3306"
+    volumes:
+      - personnel_db_data:/var/lib/mysql
+      - ./scripts/init-personnel-db.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - isg_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # MySQL Database for Exams Service
+  exams_db:
+    image: mysql:8.0
+    container_name: exams_db
+    environment:
+      MYSQL_ROOT_PASSWORD: isg_password_2024
+      MYSQL_DATABASE: exams_db
+      MYSQL_USER: isg_user
+      MYSQL_PASSWORD: isg_password_2024
+    ports:
+      - "3312:3306"
+    volumes:
+      - exams_db_data:/var/lib/mysql
+      - ./scripts/init-exams-db.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - isg_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # MySQL Database for Trainings Service
+  trainings_db:
+    image: mysql:8.0
+    container_name: trainings_db
+    environment:
+      MYSQL_ROOT_PASSWORD: isg_password_2024
+      MYSQL_DATABASE: trainings_db
+      MYSQL_USER: isg_user
+      MYSQL_PASSWORD: isg_password_2024
+    ports:
+      - "3307:3306"
+    volumes:
+      - trainings_db_data:/var/lib/mysql
+      - ./scripts/init-trainings-db.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - isg_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # MySQL Database for Risk Analysis Service
+  risks_db:
+    image: mysql:8.0
+    container_name: risks_db
+    environment:
+      MYSQL_ROOT_PASSWORD: isg_password_2024
+      MYSQL_DATABASE: risks_db
+      MYSQL_USER: isg_user
+      MYSQL_PASSWORD: isg_password_2024
+    ports:
+      - "3308:3306"
+    volumes:
+      - risks_db_data:/var/lib/mysql
+      - ./scripts/init-risks-db.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - isg_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # MySQL Database for Incidents Service
+  incidents_db:
+    image: mysql:8.0
+    container_name: incidents_db
+    environment:
+      MYSQL_ROOT_PASSWORD: isg_password_2024
+      MYSQL_DATABASE: incidents_db
+      MYSQL_USER: isg_user
+      MYSQL_PASSWORD: isg_password_2024
+    ports:
+      - "3309:3306"
+    volumes:
+      - incidents_db_data:/var/lib/mysql
+      - ./scripts/init-incidents-db.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - isg_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # MySQL Database for Documents Service
+  documents_db:
+    image: mysql:8.0
+    container_name: documents_db
+    environment:
+      MYSQL_ROOT_PASSWORD: isg_password_2024
+      MYSQL_DATABASE: documents_db
+      MYSQL_USER: isg_user
+      MYSQL_PASSWORD: isg_password_2024
+    ports:
+      - "3310:3306"
+    volumes:
+      - documents_db_data:/var/lib/mysql
+      - ./scripts/init-documents-db.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - isg_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # Users Service
+  users-service:
+    build:
+      context: .
+      dockerfile: src/UsersService/Dockerfile
+    container_name: users-service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Server=users_db;Port=3306;Database=users_db;Uid=root;Pwd=isg_password_2024;AllowPublicKeyRetrieval=True;SslMode=None;
+      - Jwt__SecretKey=ISG-System-Secret-Key-2024-Very-Long-Secret-For-JWT-Token-Generation
+      - Jwt__Issuer=ISG-System
+      - Jwt__Audience=ISG-Users
+      - Jwt__ExpirationMinutes=1440
+    ports:
+      - "8080:8080"
+    depends_on:
+      users_db:
+        condition: service_healthy
+    networks:
+      - isg_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Activities Service
+  activities-service:
+    build:
+      context: .
+      dockerfile: src/ActivitiesService/Dockerfile
+    container_name: activities-service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8091
+      - ACTIVITIES_DB=server=activities_db;port=3306;database=activities_db;user=root;password=isg_password_2024;TreatTinyAsBoolean=true
+    ports:
+      - "8091:8091"
+    depends_on:
+      activities_db:
+        condition: service_healthy
+    networks:
+      - isg_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8091/api/nonconformities"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # MySQL Database for Activities Service
+  activities_db:
+    image: mysql:8.0
+    container_name: activities_db
+    environment:
+      MYSQL_ROOT_PASSWORD: isg_password_2024
+      MYSQL_DATABASE: activities_db
+      MYSQL_USER: isg_user
+      MYSQL_PASSWORD: isg_password_2024
+    ports:
+      - "3314:3306"
+    volumes:
+      - activities_db_data:/var/lib/mysql
+      - ./scripts/init-activities-db.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - isg_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # MySQL Database for PPE Service
+  ppe_db:
+    image: mysql:8.0
+    container_name: ppe_db
+    environment:
+      MYSQL_ROOT_PASSWORD: isg_password_2024
+      MYSQL_DATABASE: ppe_db
+      MYSQL_USER: isg_user
+      MYSQL_PASSWORD: isg_password_2024
+    ports:
+      - "3320:3306"
+    volumes:
+      - ppe_db_data:/var/lib/mysql
+      - ./scripts/init-ppe-db.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - isg_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # PPE Service
+  ppe-service:
+    build:
+      context: .
+      dockerfile: src/PPEService/Dockerfile
+    container_name: ppe-service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8088
+      - ConnectionStrings__DefaultConnection=Server=ppe_db;Port=3306;Database=ppe_db;Uid=root;Pwd=isg_password_2024;AllowPublicKeyRetrieval=True;SslMode=None;
+    ports:
+      - "8088:8088"
+    depends_on:
+      ppe_db:
+        condition: service_healthy
+    networks:
+      - isg_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8088/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Personnel Service
+  personnel-service:
+    build:
+      context: .
+      dockerfile: src/PersonnelService/Dockerfile
+    container_name: personnel-service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8089
+      - ConnectionStrings__DefaultConnection=Server=personnel_db;Port=3306;Database=personnel_db;Uid=root;Pwd=isg_password_2024;AllowPublicKeyRetrieval=True;SslMode=None;
+    ports:
+      - "8089:8089"
+    depends_on:
+      personnel_db:
+        condition: service_healthy
+    networks:
+      - isg_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8089/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Exams Service
+  exams-service:
+    build:
+      context: .
+      dockerfile: src/ExamsService/Dockerfile
+    container_name: exams-service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8087
+      - ConnectionStrings__DefaultConnection=Server=exams_db;Port=3306;Database=exams_db;Uid=root;Pwd=isg_password_2024;AllowPublicKeyRetrieval=True;SslMode=None;
+    ports:
+      - "8087:8087"
+    depends_on:
+      exams_db:
+        condition: service_healthy
+    networks:
+      - isg_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8087/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Vision Service (DeepSeek-VL)
+  vision-service:
+    build:
+      context: .
+      dockerfile: src/VisionService/Dockerfile
+    container_name: vision-service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8086
+      - DeepSeek__Endpoint=https://api.deepseek.com/v1/chat/completions
+      - DeepSeek__Model=deepseek-vl
+      - Services__IncidentsService=http://incidents-service:8083
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
+    ports:
+      - "8086:8086"
+    depends_on:
+      - incidents-service
+    networks:
+      - isg_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8086/api/vision/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Trainings Service
+  trainings-service:
+    build:
+      context: .
+      dockerfile: src/TrainingsService/Dockerfile
+    container_name: trainings-service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8081
+      - ConnectionStrings__DefaultConnection=Server=trainings_db;Port=3306;Database=trainings_db;Uid=root;Pwd=isg_password_2024;
+      - Jwt__SecretKey=ISG-System-Secret-Key-2024-Very-Long-Secret-For-JWT-Token-Generation
+      - Jwt__Issuer=ISG-System
+      - Jwt__Audience=ISG-Users
+      - Jwt__ExpirationMinutes=1440
+      - Services__UsersService__BaseUrl=http://users-service:8080
+    ports:
+      - "8081:8081"
+    depends_on:
+      trainings_db:
+        condition: service_healthy
+      users-service:
+        condition: service_healthy
+    networks:
+      - isg_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/api/trainings"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Risk Analysis Service
+  risk-service:
+    build:
+      context: .
+      dockerfile: src/RiskAnalysisService/Dockerfile
+    container_name: risk-service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Server=risks_db;Port=3306;Database=risks_db;Uid=root;Pwd=isg_password_2024;AllowPublicKeyRetrieval=True;SslMode=None;
+      - Jwt__SecretKey=ISG-System-Secret-Key-2024-Very-Long-Secret-For-JWT-Token-Generation
+    ports:
+      - "8082:8082"
+    depends_on:
+      risks_db:
+        condition: service_healthy
+    networks:
+      - isg_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8082/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Incidents Service
+  incidents-service:
+    build:
+      context: .
+      dockerfile: src/IncidentsService/Dockerfile
+    container_name: incidents-service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Server=incidents_db;Port=3306;Database=incidents_db;Uid=root;Pwd=isg_password_2024;AllowPublicKeyRetrieval=True;SslMode=None;
+      - Jwt__SecretKey=ISG-System-Secret-Key-2024-Very-Long-Secret-For-JWT-Token-Generation
+    ports:
+      - "8083:8083"
+    depends_on:
+      incidents_db:
+        condition: service_healthy
+    networks:
+      - isg_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8083/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Documents Service
+  documents-service:
+    build:
+      context: .
+      dockerfile: src/DocumentsService/Dockerfile
+    container_name: documents-service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Server=documents_db;Port=3306;Database=documents_db;Uid=root;Pwd=isg_password_2024;AllowPublicKeyRetrieval=True;SslMode=None;
+      - Jwt__SecretKey=ISG-System-Secret-Key-2024-Very-Long-Secret-For-JWT-Token-Generation
+    ports:
+      - "8084:8084"
+    depends_on:
+      documents_db:
+        condition: service_healthy
+    networks:
+      - isg_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8084/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Legislation Service
+  legislation-service:
+    build:
+      context: .
+      dockerfile: src/LegislationService/Dockerfile
+    container_name: legislation-service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8093
+      - ConnectionStrings__DefaultConnection=Server=legislation_db;Port=3306;Database=legislation_db;Uid=root;Pwd=isg_password_2024;AllowPublicKeyRetrieval=True;SslMode=None;CharSet=utf8mb4;
+    ports:
+      - "8093:8093"
+    depends_on:
+      legislation_db:
+        condition: service_healthy
+    networks:
+      - isg_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8093/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Reporting Service
+  reporting-service:
+    build:
+      context: .
+      dockerfile: src/ReportingService/Dockerfile
+    container_name: reporting-service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - Jwt__SecretKey=ISG-System-Secret-Key-2024-Very-Long-Secret-For-JWT-Token-Generation
+      - Services__UsersService=http://users-service:8080
+      - Services__TrainingsService=http://trainings-service:8081
+      - Services__RiskAnalysisService=http://risk-service:8082
+      - Services__IncidentsService=http://incidents-service:8083
+      - Services__DocumentsService=http://documents-service:8084
+    ports:
+      - "8085:8085"
+    depends_on:
+      - users-service
+      - trainings-service
+      - risk-service
+      - incidents-service
+      - documents-service
+    networks:
+      - isg_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8085/api/reports/dashboard"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # İSG Expert Service
+  isg-expert-service:
+    build:
+      context: ./src/ISGExpertService
+      dockerfile: Dockerfile
+    container_name: isg-expert-service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8091
+      - CHATGPT_API_KEY=${CHATGPT_API_KEY}
+    ports:
+      - "8092:8091"
+    networks:
+      - isg_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8091/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # phpMyAdmin for database management
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    environment:
+      PMA_HOSTS: users_db,trainings_db,risks_db,incidents_db,documents_db,exams_db,personnel_db,activities_db,legislation_db
+      PMA_USER: isg_user
+      PMA_PASSWORD: isg_password_2024
+    ports:
+      - "8090:80"
+    depends_on:
+      - users_db
+      - trainings_db
+      - risks_db
+      - incidents_db
+      - documents_db
+    networks:
+      - isg_network
+
+volumes:
+  users_db_data:
+    driver: local
+  trainings_db_data:
+    driver: local
+  risks_db_data:
+    driver: local
+  incidents_db_data:
+    driver: local
+  documents_db_data:
+    driver: local
+  exams_db_data:
+    driver: local
+  personnel_db_data:
+    driver: local
+  ppe_db_data:
+    driver: local
+  activities_db_data:
+    driver: local
+  legislation_db_data:
+    driver: local
+
+networks:
+  isg_network:
+    driver: bridge
