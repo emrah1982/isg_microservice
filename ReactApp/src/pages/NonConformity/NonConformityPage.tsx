@@ -8,6 +8,7 @@ import {
   INonConformity 
 } from '@api/nonConformityApi';
 import NonConformityForm from './NonConformityForm';
+import WhatsAppAnalysisPage from '@pages/Reporting/WhatsAppAnalysisPage';
  
 
 const rootCauseLabels: Record<string, string> = {
@@ -45,10 +46,10 @@ export default function NonConformityPage() {
   const queryClient = useQueryClient();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<INonConformity | null>(null);
-  const [activeTab, setActiveTab] = useState<'list' | 'analysis'>('list');
+  const [activeTab, setActiveTab] = useState<'list' | 'analysis' | 'whatsapp'>('list');
   const [filters, setFilters] = useState<{ rootCause: 'all' | INonConformity['rootCause']; status: 'all' | INonConformity['status']; from: string; to: string }>({ rootCause: 'all', status: 'all', from: '', to: '' });
   
-  const { data: items = [], isLoading, error } = useQuery({ 
+  const { data: items = [], isLoading, error } = useQuery<INonConformity[]>({ 
     queryKey: ['nonConformities'], 
     queryFn: listNonConformities 
   });
@@ -107,7 +108,8 @@ export default function NonConformityPage() {
     },
   });
 
-  const handleSubmit = async (data: Omit<INonConformity, 'id' | 'createdAt' | 'updatedAt'>) => {
+  // Form bileşeni ile imza uyumu için parametreyi esnek tuttuk
+  const handleSubmit = async (data: any) => {
     if (editingItem) {
       await updateMutation.mutateAsync({ id: editingItem.id!, data });
     } else {
@@ -130,7 +132,7 @@ export default function NonConformityPage() {
   const filteredItems = React.useMemo(() => {
     const fromDate = filters.from ? new Date(filters.from) : null;
     const toDate = filters.to ? new Date(filters.to) : null;
-    return items.filter((it) => {
+    return items.filter((it: INonConformity) => {
       if (filters.rootCause !== 'all' && it.rootCause !== filters.rootCause) return false;
       if (filters.status !== 'all' && it.status !== filters.status) return false;
       if (fromDate && it.createdAt && new Date(it.createdAt) < fromDate) return false;
@@ -139,12 +141,12 @@ export default function NonConformityPage() {
     });
   }, [items, filters]);
 
-  const rootCauseCounts = filteredItems.reduce((acc, item) => {
+  const rootCauseCounts = filteredItems.reduce((acc: Record<string, number>, item: INonConformity) => {
     acc[item.rootCause] = (acc[item.rootCause] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
 
-  const statusCounts = filteredItems.reduce((acc, item) => {
+  const statusCounts = filteredItems.reduce((acc: Record<string, number>, item: INonConformity) => {
     acc[item.status] = (acc[item.status] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
@@ -157,30 +159,36 @@ export default function NonConformityPage() {
 
   // 14-day trend
   const trendDays = 14;
-  const trend = Array.from({ length: trendDays }).map((_, idx) => {
+  const trend = Array.from({ length: trendDays }).map((_, idx: number) => {
     const d = new Date();
     d.setDate(d.getDate() - (trendDays - 1 - idx));
     const key = d.toISOString().slice(0, 10);
-    const count = filteredItems.filter(i => (i.createdAt || '').slice(0,10) === key).length;
+    const count = filteredItems.filter((i: INonConformity) => (i.createdAt || '').slice(0,10) === key).length;
     return { key, label: `${d.getDate().toString().padStart(2,'0')}.${(d.getMonth()+1).toString().padStart(2,'0')}`, count };
   });
 
   function exportCsv() {
     const headers = ['Id','Başlık','KökNeden','KökNedenAçıklama','Durum','Takip','TakipAçıklama','Oluşturma','Düzeltici','Önleyici','Bildiren'];
-    const rows = filteredItems.map(i => [
+    const rows = filteredItems.map((i: INonConformity) => [
       i.id ?? '',
-      (i.title ?? '').replaceAll('\n',' '),
+      (i.title ?? '').split('\n').join(' '),
       i.rootCause,
-      (i.rootCauseDescription ?? '').replaceAll('\n',' '),
+      (i.rootCauseDescription ?? '').split('\n').join(' '),
       i.status,
       i.requiresFollowUp ? 'Evet' : 'Hayır',
-      (i.followUpDescription ?? '').replaceAll('\n',' '),
+      (i.followUpDescription ?? '').split('\n').join(' '),
       i.createdAt ? formatDate(i.createdAt) : '',
-      (i.correctiveActions ?? '').replaceAll('\n',' '),
-      (i.preventiveActions ?? '').replaceAll('\n',' '),
+      (i.correctiveActions ?? '').split('\n').join(' '),
+      (i.preventiveActions ?? '').split('\n').join(' '),
       i.reportedBy ?? ''
     ]);
-    const csv = [headers, ...rows].map(r => r.map(f => `"${String(f).replaceAll('"','""')}"`).join(',')).join('\r\n');
+    const csv = [headers, ...rows]
+      .map((r: (string | number | boolean)[]) =>
+        r
+          .map((f: string | number | boolean) => `"${String(f).replace(/"/g,'""')}"`)
+          .join(',')
+      )
+      .join('\r\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -243,9 +251,26 @@ export default function NonConformityPage() {
         >
           Hızlı Analiz
         </button>
+        <button
+          onClick={() => setActiveTab('whatsapp')}
+          style={{
+            padding: '10px 20px',
+            background: activeTab === 'whatsapp' ? '#f0f0f0' : 'transparent',
+            border: 'none',
+            borderBottom: activeTab === 'whatsapp' ? '2px solid #1976d2' : 'none',
+            cursor: 'pointer',
+            fontWeight: activeTab === 'whatsapp' ? 'bold' : 'normal',
+          }}
+        >
+          WhatsApp Analizi
+        </button>
       </div>
 
-      {activeTab === 'list' ? (
+      {activeTab === 'whatsapp' ? (
+        <div style={{ marginTop: 12 }}>
+          <WhatsAppAnalysisPage />
+        </div>
+      ) : activeTab === 'list' ? (
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>

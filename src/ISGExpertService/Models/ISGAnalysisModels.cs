@@ -53,7 +53,10 @@ public class UygunsuzlukAnalizi
 {
     public string Tanim { get; set; } = string.Empty;
     public string Kategori { get; set; } = string.Empty;
-{{ ... }}
+    public string RiskDerecesi { get; set; } = string.Empty;
+    public int RiskSkoru { get; set; }
+    public string YasalDayanak { get; set; } = string.Empty;
+    public string ISO45001Maddesi { get; set; } = string.Empty;
     public string IzlemePlani { get; set; } = string.Empty;
     public string GozdenGecirmePlani { get; set; } = string.Empty;
     public DateTime? IlkGozdenGecirmeTarihi { get; set; }
@@ -71,7 +74,8 @@ public class DuzeltmeTalepFormu
 {
     // "Düzeltme talep eden tarafından doldurulur: Takip gerekli değil / Takip gerekli Açıklama:"
     public bool TakipGerekli { get; set; } = false;
-{{ ... }}
+    public string TakipAciklama { get; set; } = string.Empty;
+    public string Aciklama { get; set; } = string.Empty;
     public string TalepEden { get; set; } = string.Empty;
 }
 
@@ -116,4 +120,79 @@ public class Usage
     public int PromptTokens { get; set; }
     public int CompletionTokens { get; set; }
     public int TotalTokens { get; set; }
+}
+
+public class KokNedenAnalizi
+{
+    public List<string> Insan { get; set; } = new();
+    public List<string> Malzeme { get; set; } = new();
+    public List<string> Makine { get; set; } = new();
+    public List<string> Metot { get; set; } = new();
+    public List<string> Doga { get; set; } = new();
+}
+
+public class AcilAksiyonPlani
+{
+    public string IlkMudahale { get; set; } = string.Empty;
+    public string GeciciGuvenlikTedbirleri { get; set; } = string.Empty;
+    public string AtananSorumlu { get; set; } = string.Empty;
+    public DateTime? TamamlanmaZamani { get; set; }
+}
+
+public class DuzelticiVeDuzeltmeFaaliyetleri
+{
+    public List<string> Faaliyetler { get; set; } = new();
+    public List<DuzelticiAksiyon> DuzelticiAksiyonlar { get; set; } = new();
+}
+
+public class DuzelticiAksiyon
+{
+    public string Aciklama { get; set; } = string.Empty;
+    public string SorumluDepartman { get; set; } = string.Empty;
+    public string HedefTarih { get; set; } = string.Empty;
+}
+
+public class UygunsuzlugunTekrariniOnlemekIcinIyilestirmeler
+{
+    public string Aciklama { get; set; } = string.Empty;
+    public List<SistemselIyilestirme> SistemselIyilestirmeler { get; set; } = new();
+    public List<ProsedurGuncelleme> ProsedurGuncellemeleri { get; set; } = new();
+    public List<EgitimProgrami> EgitimProgramlari { get; set; } = new();
+}
+
+public class ProsedurGuncelleme
+{
+    public string Baslik { get; set; } = string.Empty;
+    public string Aciklama { get; set; } = string.Empty;
+}
+
+public class EgitimProgrami
+{
+    public string Baslik { get; set; } = string.Empty;
+    public string Aciklama { get; set; } = string.Empty;
+}
+
+public class SistemselIyilestirme
+{
+    public string Baslik { get; set; } = string.Empty;
+    public string Detay { get; set; } = string.Empty;
+    public string Alan { get; set; } = string.Empty;
+    public string Aciklama { get; set; } = string.Empty;
+    public string BeklenenFayda { get; set; } = string.Empty;
+    public string Uygulama { get; set; } = string.Empty;
+}
+
+public class PerformansIzleme
+{
+    public List<string> OncuGostergeler { get; set; } = new();
+    public List<string> GecikmeliGostergeler { get; set; } = new();
+    public string BasariKriterleri { get; set; } = string.Empty;
+    public string IzlemePlani { get; set; } = string.Empty;
+    public string GozdenGecirmePeriyodu { get; set; } = string.Empty;
+    public DateTime? IlkGozdenGecirmeTarihi { get; set; }
+}
+
+public class EtkinlikGozdenGecirme
+{
+    public string Aciklama { get; set; } = string.Empty;
 }

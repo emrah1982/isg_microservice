@@ -60,6 +60,11 @@ export default defineConfig({
       },
       
       // Activities Service (8091)
+      '/api/personneldocuments': {
+        target: 'http://localhost:8091',
+        changeOrigin: true,
+        secure: false
+      },
       '/api/communications': {
         target: 'http://localhost:8091',
         changeOrigin: true,

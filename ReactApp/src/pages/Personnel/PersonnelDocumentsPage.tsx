@@ -66,6 +66,18 @@ export default function PersonnelDocumentsPage() {
   const [previewDocument, setPreviewDocument] = React.useState<any>(null);
   const [approvalModal, setApprovalModal] = React.useState(false);
   const [approvalDocument, setApprovalDocument] = React.useState<any>(null);
+  const [addPersonnelModal, setAddPersonnelModal] = React.useState(false);
+  const [newPersonnel, setNewPersonnel] = React.useState({
+    firstName: '',
+    lastName: '',
+    nationalId: '',
+    email: '',
+    phone: '',
+    department: '',
+    title: '',
+    position: '',
+    companyId: null as number | null
+  });
 
   // Belge türüne göre kabul edilen mime types/extensions
   const isCertificateType = React.useMemo(() => {
@@ -97,8 +109,12 @@ export default function PersonnelDocumentsPage() {
   React.useEffect(() => {
     loadDocumentTypes();
     // URL'den gelen TC No varsa otomatik ara
-    if (nationalId) {
-      searchPersonnel();
+    const urlTcNo = searchParams.get('tcno');
+    if (urlTcNo) {
+      setNationalId(urlTcNo);
+      setTimeout(() => {
+        searchPersonnel();
+      }, 500);
     }
   }, []);
 
@@ -115,7 +131,7 @@ export default function PersonnelDocumentsPage() {
     try {
       // Test database connection first
       console.log('Testing PersonnelDocuments database...');
-      const testResponse = await fetch('/api/personneldocuments/test');
+      const testResponse = await fetch('http://localhost:8091/api/personneldocuments/test');
       console.log('Database test response:', testResponse.status);
       if (testResponse.ok) {
         const testData = await testResponse.json();
@@ -123,7 +139,7 @@ export default function PersonnelDocumentsPage() {
       }
 
       // Load document types
-      const response = await fetch('/api/personneldocuments/types');
+      const response = await fetch('http://localhost:8091/api/personneldocuments/types');
       console.log('Document types response:', response.status);
       if (response.ok) {
         const data = await response.json();
@@ -214,9 +230,13 @@ export default function PersonnelDocumentsPage() {
     setLoading(true);
     try {
       // Search personnel by TC No
-      const searchResponse = await fetch(`/api/personnel/search/${nationalId}`);
+      const searchResponse = await fetch(`http://localhost:8089/api/personnel/search/${nationalId}`);
       if (!searchResponse.ok) {
-        throw new Error('Bu TC No ile personel bulunamadı');
+        // Personel bulunamadı - yeni personel ekleme modalını aç
+        setNewPersonnel({ ...newPersonnel, nationalId: nationalId });
+        setAddPersonnelModal(true);
+        setLoading(false);
+        return;
       }
       const personnel = await searchResponse.json();
       setPersonnelId(personnel.id.toString());
@@ -225,7 +245,7 @@ export default function PersonnelDocumentsPage() {
       // Get document status - force real API call
       try {
         console.log(`Fetching document status for personnel ID: ${personnel.id}`);
-        const statusResponse = await fetch(`/api/personneldocuments/personnel/${personnel.id}/status`);
+        const statusResponse = await fetch(`http://localhost:8091/api/personneldocuments/personnel/${personnel.id}/status`);
         console.log('Status response:', statusResponse.status, statusResponse.statusText);
         
         if (statusResponse.ok) {
@@ -249,6 +269,58 @@ export default function PersonnelDocumentsPage() {
       setDocumentStatus(null);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const addPersonnel = async () => {
+    if (!newPersonnel.firstName || !newPersonnel.lastName || !newPersonnel.nationalId) {
+      alert('Ad, Soyad ve TC No zorunludur');
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/personnel', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          firstName: newPersonnel.firstName,
+          lastName: newPersonnel.lastName,
+          nationalId: newPersonnel.nationalId,
+          email: newPersonnel.email || null,
+          phone: newPersonnel.phone || null,
+          department: newPersonnel.department || null,
+          title: newPersonnel.title || null,
+          position: newPersonnel.position || null,
+          companyId: newPersonnel.companyId,
+          status: 'Active'
+        })
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || 'Personel eklenemedi');
+      }
+
+      const createdPersonnel = await response.json();
+      alert('Personel başarıyla eklendi!');
+      setAddPersonnelModal(false);
+      setNewPersonnel({
+        firstName: '',
+        lastName: '',
+        nationalId: '',
+        email: '',
+        phone: '',
+        department: '',
+        title: '',
+        position: '',
+        companyId: null
+      });
+      
+      // Yeni eklenen personeli otomatik ara
+      setNationalId(createdPersonnel.nationalId || newPersonnel.nationalId);
+      setTimeout(() => searchPersonnel(), 500);
+    } catch (error: any) {
+      alert('Hata: ' + error.message);
     }
   };
 
@@ -279,7 +351,7 @@ export default function PersonnelDocumentsPage() {
     if (composedNotes) formData.append('Notes', composedNotes);
 
     try {
-      const response = await fetch('/api/personneldocuments/upload', {
+      const response = await fetch('http://localhost:8091/api/personneldocuments/upload', {
         method: 'POST',
         body: formData
       });
@@ -351,7 +423,7 @@ export default function PersonnelDocumentsPage() {
 
   const downloadDocument = async (docId: number, fileName: string) => {
     try {
-      const response = await fetch(`/api/personneldocuments/${docId}/download`);
+      const response = await fetch(`http://localhost:8091/api/personneldocuments/${docId}/download`);
       if (!response.ok) throw new Error('İndirme hatası');
       
       const blob = await response.blob();
@@ -371,7 +443,7 @@ export default function PersonnelDocumentsPage() {
   const openPreview = async (document: any) => {
     try {
       console.log('Opening preview for document:', document);
-      const response = await fetch(`/api/personneldocuments/${document.id}/download`);
+      const response = await fetch(`http://localhost:8091/api/personneldocuments/${document.id}/download`);
       console.log('Download response:', response.status, response.statusText);
       
       if (!response.ok) {
@@ -411,7 +483,7 @@ export default function PersonnelDocumentsPage() {
   const approveDocument = async (documentId: number, approved: boolean) => {
     try {
       console.log('Approving document:', documentId, 'approved:', approved);
-      const response = await fetch(`/api/personneldocuments/${documentId}/approve`, {
+      const response = await fetch(`http://localhost:8091/api/personneldocuments/${documentId}/approve`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ approved })
@@ -595,6 +667,29 @@ export default function PersonnelDocumentsPage() {
                       }}>
                         {getStatusText(doc)}
                       </span>
+                      <button
+                        onClick={() => {
+                          setSelectedDocType(doc.documentType);
+                          setUploadFile(null);
+                          setUploadForm({ issueDate: '', expiryDate: '', issuingAuthority: '', documentNumber: '', notes: '' });
+                          setMykEnabled(false);
+                          setMykLevel('');
+                          setMykCode('');
+                          setUploadModal(true);
+                        }}
+                        style={{
+                          padding: '4px 10px',
+                          borderRadius: 4,
+                          fontSize: 12,
+                          border: 'none',
+                          cursor: 'pointer',
+                          background: doc.hasDocument ? '#22c55e' : '#3b82f6',
+                          color: '#fff',
+                          fontWeight: 600
+                        }}
+                      >
+                        {doc.hasDocument ? 'Güncelle' : 'Belge Yükle'}
+                      </button>
                       {doc.latestDocument && (
                         <div style={{ display: 'flex', gap: 6 }}>
                           <button 

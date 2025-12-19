@@ -12,9 +12,17 @@ export interface INonConformity {
   // Uygunsuzluğun Tanımı
   nonConformityDescription: string;
 
+  // UI tarafında kullanılan başlık/açıklama alanları (backend alanlarına alias)
+  title?: string; // genellikle nonConformityDescription ile eş anlamlı kullanılacak
+  description?: string; // detay açıklama için opsiyonel alan
+
   // Kök neden (kategori ve açıklama)
   rootCauseCategory?: 'human' | 'material' | 'machine' | 'method' | 'nature' | string; // backend string tutuyor
   rootCauseDetails?: string;
+
+  // UI alias fields for root cause
+  rootCause?: 'human' | 'material' | 'machine' | 'method' | 'nature' | string;
+  rootCauseDescription?: string;
   // Çoklu kök nedenlerin CSV karşılığı (backend depolama alanı)
   rootCauseCategoriesCsv?: string;
 
@@ -22,14 +30,25 @@ export interface INonConformity {
   plannedCorrectiveActions?: string;
   preventiveImprovements?: string;
 
+  // UI alias fields for actions
+  correctiveActions?: string;
+  preventiveActions?: string;
+
   // Takip gerekliliği
   trackingRequired: boolean;
   trackingExplanation?: string;
 
+  // UI alias fields for tracking
+  requiresFollowUp?: boolean;
+  followUpDescription?: string;
+
   // Genel durum
-  status?: 'Open' | 'InProgress' | 'Closed' | string;
+  status?: 'Open' | 'InProgress' | 'Closed' | 'open' | 'in_progress' | 'resolved' | 'closed' | string;
   targetDate?: string | null; // ISO tarih
   assignedToPersonName?: string;
+
+  // UI alias for who reported / responsible person
+  reportedBy?: string;
 
   // UI-only optional fields for upload/multi-select
   rootCauseCategories?: string[];

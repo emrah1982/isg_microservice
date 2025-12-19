@@ -1,5 +1,16 @@
 import React from 'react';
-import { listPersonnel, createPersonnel, updatePersonnel, deletePersonnel, type Personnel } from '@api/personnelApi';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
+  TableSortLabel,
+  TextField,
+} from '@mui/material';
+import { listPersonnel, createPersonnel, updatePersonnel, deletePersonnel, importPersonnelExcel, type Personnel } from '@api/personnelApi';
 import { listCompanies, type Company } from '@api/companiesApi';
 import { getPersonnelExams } from '@api/examsApi';
 
@@ -10,6 +21,23 @@ export default function PersonnelPage() {
   const [open, setOpen] = React.useState(false);
   const [editingId, setEditingId] = React.useState<number | null>(null);
   const [filters, setFilters] = React.useState({ q: '', department: '', title: '', companyId: '' as any as number | '' });
+  const [excelOpen, setExcelOpen] = React.useState(false);
+  const [excelFile, setExcelFile] = React.useState<File | null>(null);
+  const [excelDepartment, setExcelDepartment] = React.useState('');
+  const [excelTitle, setExcelTitle] = React.useState('');
+  const [excelCompanyId, setExcelCompanyId] = React.useState<number | ''>('');
+  const [excelCitizenshipType, setExcelCitizenshipType] = React.useState<'TR' | 'Foreign'>('TR');
+  const [excelNationality, setExcelNationality] = React.useState('');
+  const [excelLoading, setExcelLoading] = React.useState(false);
+  const [excelResult, setExcelResult] = React.useState<any | null>(null);
+  const [excelError, setExcelError] = React.useState<string | null>(null);
+
+  // Excel result table state (skipped samples)
+  const [skippedSearch, setSkippedSearch] = React.useState('');
+  const [skippedOrderBy, setSkippedOrderBy] = React.useState<'row' | 'reason' | 'tc' | 'name' | 'detail'>('row');
+  const [skippedOrder, setSkippedOrder] = React.useState<'asc' | 'desc'>('asc');
+  const [skippedPage, setSkippedPage] = React.useState(0);
+  const [skippedRowsPerPage, setSkippedRowsPerPage] = React.useState(10);
   const [form, setForm] = React.useState({
     firstName: '',
     lastName: '',
@@ -21,6 +49,7 @@ export default function PersonnelPage() {
     title: '',
     position: '',
     startDate: '',
+    isgTemelEgitimBelgesiTarihi: '',
     status: 'Active',
   });
   const [saving, setSaving] = React.useState(false);
@@ -89,7 +118,7 @@ export default function PersonnelPage() {
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
-  const resetForm = () => setForm({ firstName:'', lastName:'', email:'', phone:'', nationalId:'', companyId:'', department:'', title:'', position:'', startDate:'', status:'Active' });
+  const resetForm = () => setForm({ firstName:'', lastName:'', email:'', phone:'', nationalId:'', companyId:'', department:'', title:'', position:'', startDate:'', isgTemelEgitimBelgesiTarihi:'', status:'Active' });
 
   const openCreate = () => {
     setEditingId(null);
@@ -110,6 +139,7 @@ export default function PersonnelPage() {
       title: p.title || '',
       position: p.position || '',
       startDate: p.startDate ? p.startDate.substring(0,10) : '',
+      isgTemelEgitimBelgesiTarihi: p.isgTemelEgitimBelgesiTarihi ? p.isgTemelEgitimBelgesiTarihi.substring(0,10) : '',
       status: (p.status as any) || 'Active',
     });
     setOpen(true);
@@ -124,7 +154,12 @@ export default function PersonnelPage() {
     }
     setSaving(true);
     try {
-      const payload: any = { ...form, companyId: form.companyId === '' ? null : Number(form.companyId) };
+      const payload: any = {
+        ...form,
+        companyId: form.companyId === '' ? null : Number(form.companyId),
+        startDate: form.startDate ? form.startDate : null,
+        isgTemelEgitimBelgesiTarihi: form.isgTemelEgitimBelgesiTarihi ? form.isgTemelEgitimBelgesiTarihi : null,
+      };
       if (editingId) {
         await updatePersonnel(editingId, payload);
       } else {
@@ -182,6 +217,44 @@ export default function PersonnelPage() {
   const openDetailModal = (p: Personnel) => {
     setDetailPersonnel(p);
     setDetailModal(true);
+  };
+
+  const openExcelImport = () => {
+    setExcelResult(null);
+    setExcelError(null);
+    setExcelFile(null);
+    setExcelDepartment(filters.department || '');
+    setExcelTitle(filters.title || '');
+    setExcelCompanyId((filters.companyId as any) ?? '');
+    setExcelCitizenshipType('TR');
+    setExcelNationality('');
+    setExcelOpen(true);
+  };
+
+  const submitExcelImport = async () => {
+    if (!excelFile) {
+      setExcelError('Lütfen .xlsx dosyası seçin');
+      return;
+    }
+    setExcelLoading(true);
+    setExcelError(null);
+    setExcelResult(null);
+    try {
+      const res = await importPersonnelExcel(excelFile, {
+        companyId: excelCompanyId === '' ? null : Number(excelCompanyId),
+        department: excelDepartment || undefined,
+        title: excelTitle || undefined,
+        citizenshipType: excelCitizenshipType,
+        nationality: excelCitizenshipType === 'Foreign' ? (excelNationality || undefined) : undefined
+      });
+      setExcelResult(res);
+      await load();
+    } catch (e: any) {
+      const msg = e?.response?.data?.message || e?.message || 'Excel aktarımı sırasında hata oluştu';
+      setExcelError(String(msg));
+    } finally {
+      setExcelLoading(false);
+    }
   };
 
   return (
@@ -251,6 +324,12 @@ export default function PersonnelPage() {
           </div>
           
           <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
+            <button 
+              onClick={openExcelImport}
+              style={{ padding: '6px 12px', background: '#0ea5e9', color: '#fff', border: 'none', borderRadius: 3, fontSize: 12, cursor: 'pointer' }}
+            >
+              Excel'den Yükle
+            </button>
             <button 
               onClick={() => { setCompanyForm({ name: '', taxNumber: '', address: '' }); setCompanyOpen(true); }} 
               style={{ padding: '6px 12px', background: '#059669', color: '#fff', border: 'none', borderRadius: 3, fontSize: 12, cursor: 'pointer' }}
@@ -481,6 +560,327 @@ export default function PersonnelPage() {
             <div style={footerRow}>
               <button type="button" onClick={() => setExamOpen(false)} style={btnOutlined}>Kapat</button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {excelOpen && (
+        <div style={modalBackdrop} onClick={() => !excelLoading && setExcelOpen(false)}>
+          <div style={{ ...modalCard, width: 720 }} onClick={e => e.stopPropagation()}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+              <div>
+                <div style={{ fontSize: 18, fontWeight: 700, color: '#111827' }}>Excel'den Personel Aktarımı</div>
+                <div style={{ fontSize: 12, color: '#6b7280', marginTop: 4 }}>
+                  Kolon sırası değişse bile başlıklara göre okunur. TC varsa ikinci kayıt oluşturulmaz.
+                </div>
+              </div>
+              <button
+                onClick={() => setExcelOpen(false)}
+                disabled={excelLoading}
+                style={{ padding: '6px 10px', background: '#fff', border: '1px solid #cbd5e1', borderRadius: 6, cursor: 'pointer' }}
+              >
+                Kapat
+              </button>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div style={{ gridColumn: '1 / -1' }}>
+                <label style={labelStyle}>Millet / Uyruk</label>
+                <div style={{ display: 'flex', gap: 16, alignItems: 'center', padding: '8px 10px', border: '1px solid #cbd5e1', borderRadius: 6, background: '#fff' }}>
+                  <label style={{ display: 'flex', gap: 8, alignItems: 'center', cursor: 'pointer' }}>
+                    <input
+                      type="radio"
+                      name="citizenshipType"
+                      checked={excelCitizenshipType === 'TR'}
+                      onChange={() => setExcelCitizenshipType('TR')}
+                      disabled={excelLoading}
+                    />
+                    <span style={{ fontSize: 13, fontWeight: 600, color: '#111827' }}>T.C. Vatandaşı</span>
+                  </label>
+                  <label style={{ display: 'flex', gap: 8, alignItems: 'center', cursor: 'pointer' }}>
+                    <input
+                      type="radio"
+                      name="citizenshipType"
+                      checked={excelCitizenshipType === 'Foreign'}
+                      onChange={() => setExcelCitizenshipType('Foreign')}
+                      disabled={excelLoading}
+                    />
+                    <span style={{ fontSize: 13, fontWeight: 600, color: '#111827' }}>Yabancı Uyruklu</span>
+                  </label>
+                </div>
+                {excelCitizenshipType === 'Foreign' && (
+                  <div style={{ marginTop: 8, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                    <div>
+                      <label style={labelStyle}>Uyruk (opsiyonel)</label>
+                      <select
+                        value={excelNationality}
+                        onChange={e => setExcelNationality(e.target.value)}
+                        style={inputStyle}
+                        disabled={excelLoading}
+                      >
+                        <option value="">Seçiniz</option>
+                        <option value="Syria">Suriye</option>
+                        <option value="Afghanistan">Afganistan</option>
+                        <option value="Iraq">Irak</option>
+                        <option value="Iran">İran</option>
+                        <option value="Uzbekistan">Özbekistan</option>
+                        <option value="Turkmenistan">Türkmenistan</option>
+                        <option value="Azerbaijan">Azerbaycan</option>
+                        <option value="Georgia">Gürcistan</option>
+                        <option value="Pakistan">Pakistan</option>
+                        <option value="Russia">Rusya</option>
+                        <option value="Other">Diğer</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Not</label>
+                      <div style={{ fontSize: 12, color: '#475569', paddingTop: 6 }}>
+                        Yabancı personelde eşleştirme Excel'deki <b>Yabancı Kimlik No</b> veya <b>Pasaport No</b> kolonlarına göre yapılır.
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div style={{ gridColumn: '1 / -1' }}>
+                <label style={labelStyle}>Excel Dosyası (.xlsx)</label>
+                <input
+                  type="file"
+                  accept=".xlsx"
+                  onChange={e => setExcelFile(e.target.files?.[0] ?? null)}
+                  style={{ width: '100%' }}
+                  disabled={excelLoading}
+                />
+              </div>
+
+              <div>
+                <label style={labelStyle}>Firma (opsiyonel)</label>
+                <select
+                  value={excelCompanyId as any}
+                  onChange={e => setExcelCompanyId(e.target.value ? Number(e.target.value) : '')}
+                  style={inputStyle}
+                  disabled={excelLoading}
+                >
+                  <option value="">Seçme (Excel/Mevcut veriden)</option>
+                  {companies.map(c => (
+                    <option key={c.id} value={c.id}>{c.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label style={labelStyle}>Departman (opsiyonel)</label>
+                <input
+                  value={excelDepartment}
+                  onChange={e => setExcelDepartment(e.target.value)}
+                  style={inputStyle}
+                  placeholder="Örn: SAHA"
+                  disabled={excelLoading}
+                />
+              </div>
+
+              <div>
+                <label style={labelStyle}>Ünvan (opsiyonel)</label>
+                <input
+                  value={excelTitle}
+                  onChange={e => setExcelTitle(e.target.value)}
+                  style={inputStyle}
+                  placeholder="Örn: DEMİRCİ"
+                  disabled={excelLoading}
+                />
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'end', justifyContent: 'flex-end' }}>
+                <button
+                  onClick={submitExcelImport}
+                  disabled={excelLoading}
+                  style={{ padding: '8px 16px', background: excelLoading ? '#94a3b8' : '#0ea5e9', color: '#fff', border: 'none', borderRadius: 6, cursor: excelLoading ? 'not-allowed' : 'pointer', fontWeight: 600 }}
+                >
+                  {excelLoading ? 'Yükleniyor...' : 'Aktar'}
+                </button>
+              </div>
+            </div>
+
+            {excelError && (
+              <div style={{ marginTop: 12, padding: 10, borderRadius: 8, background: '#fef2f2', border: '1px solid #fecaca', color: '#991b1b', fontSize: 13 }}>
+                {excelError}
+              </div>
+            )}
+
+            {excelResult && (
+              <div style={{ marginTop: 12, padding: 10, borderRadius: 8, background: '#ecfeff', border: '1px solid #a5f3fc', color: '#0f172a', fontSize: 13 }}>
+                <div style={{ fontWeight: 700, marginBottom: 6 }}>Aktarım Sonucu</div>
+                <div>Oluşturulan: {excelResult.created ?? 0}</div>
+                <div>Güncellenen: {excelResult.updated ?? 0}</div>
+                <div>Atlanan: {excelResult.skipped ?? 0}</div>
+                <div>Giriş/Çıkış kaydı: {excelResult.eventsCreated ?? 0}</div>
+
+                <div style={{ marginTop: 8, paddingTop: 8, borderTop: '1px dashed #67e8f9' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
+                    <div>
+                      <span style={{ fontWeight: 700 }}>Departman:</span> {excelDepartment?.trim() ? excelDepartment.trim() : '-'}
+                    </div>
+                    <div>
+                      <span style={{ fontWeight: 700 }}>Uyruk (Milliyet):</span>{' '}
+                      {excelCitizenshipType === 'TR' ? 'T.C.' : (excelNationality?.trim() ? excelNationality.trim() : '-')}
+                    </div>
+                  </div>
+                </div>
+                {excelResult.skippedBreakdown && (
+                  <div style={{ marginTop: 10 }}>
+                    <div style={{ fontWeight: 700, marginBottom: 6 }}>Atlanan Dağılımı</div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
+                      {Object.entries(excelResult.skippedBreakdown as Record<string, any>).map(([k, v]) => (
+                        <div key={k} style={{ padding: '6px 8px', border: '1px solid #bae6fd', borderRadius: 8, background: '#f0f9ff' }}>
+                          <div style={{ fontSize: 12, color: '#0369a1', fontWeight: 700 }}>{k}</div>
+                          <div style={{ fontSize: 14, fontWeight: 800 }}>{Number(v) || 0}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {Array.isArray(excelResult.skippedSamples) && excelResult.skippedSamples.length > 0 && (
+                  <div style={{ marginTop: 10 }}>
+                    <div style={{ fontWeight: 700, marginBottom: 6 }}>Atlanan Satırlar</div>
+
+                    <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 8 }}>
+                      <TextField
+                        value={skippedSearch}
+                        onChange={(e) => { setSkippedSearch(e.target.value); setSkippedPage(0); }}
+                        size="small"
+                        placeholder="Ara (neden, tc, ad soyad, detay)"
+                        style={{ width: 340 }}
+                      />
+                      <div style={{ fontSize: 12, color: '#475569' }}>
+                        Not: Örnekler backend tarafında en fazla 50 satır döner.
+                      </div>
+                    </div>
+
+                    {(() => {
+                      const raw = (excelResult.skippedSamples as any[]);
+                      const q = skippedSearch.trim().toLowerCase();
+                      const filtered = !q
+                        ? raw
+                        : raw.filter((s) => {
+                            const hay = `${s?.row ?? ''} ${s?.reason ?? ''} ${s?.tc ?? ''} ${s?.name ?? ''} ${s?.detail ?? ''}`.toLowerCase();
+                            return hay.includes(q);
+                          });
+
+                      const getVal = (s: any, key: typeof skippedOrderBy) => {
+                        if (key === 'row') return Number(s?.row ?? 0);
+                        return String(s?.[key] ?? '').toLowerCase();
+                      };
+
+                      const sorted = [...filtered].sort((a, b) => {
+                        const av = getVal(a, skippedOrderBy);
+                        const bv = getVal(b, skippedOrderBy);
+                        if (av < bv) return skippedOrder === 'asc' ? -1 : 1;
+                        if (av > bv) return skippedOrder === 'asc' ? 1 : -1;
+                        return 0;
+                      });
+
+                      const start = skippedPage * skippedRowsPerPage;
+                      const pageRows = sorted.slice(start, start + skippedRowsPerPage);
+
+                      const onSort = (key: typeof skippedOrderBy) => {
+                        if (skippedOrderBy === key) {
+                          setSkippedOrder(skippedOrder === 'asc' ? 'desc' : 'asc');
+                        } else {
+                          setSkippedOrderBy(key);
+                          setSkippedOrder('asc');
+                        }
+                      };
+
+                      return (
+                        <div style={{ border: '1px solid #bae6fd', borderRadius: 8, background: '#f0f9ff', overflow: 'hidden' }}>
+                          <TableContainer style={{ maxHeight: 320 }}>
+                            <Table stickyHeader size="small" aria-label="atlanan-satirlar-tablosu">
+                              <TableHead>
+                                <TableRow>
+                                  <TableCell style={{ fontWeight: 800 }}>
+                                    <TableSortLabel
+                                      active={skippedOrderBy === 'row'}
+                                      direction={skippedOrderBy === 'row' ? skippedOrder : 'asc'}
+                                      onClick={() => onSort('row')}
+                                    >
+                                      Satır
+                                    </TableSortLabel>
+                                  </TableCell>
+                                  <TableCell style={{ fontWeight: 800 }}>
+                                    <TableSortLabel
+                                      active={skippedOrderBy === 'reason'}
+                                      direction={skippedOrderBy === 'reason' ? skippedOrder : 'asc'}
+                                      onClick={() => onSort('reason')}
+                                    >
+                                      Neden
+                                    </TableSortLabel>
+                                  </TableCell>
+                                  <TableCell style={{ fontWeight: 800 }}>
+                                    <TableSortLabel
+                                      active={skippedOrderBy === 'tc'}
+                                      direction={skippedOrderBy === 'tc' ? skippedOrder : 'asc'}
+                                      onClick={() => onSort('tc')}
+                                    >
+                                      TC
+                                    </TableSortLabel>
+                                  </TableCell>
+                                  <TableCell style={{ fontWeight: 800 }}>
+                                    <TableSortLabel
+                                      active={skippedOrderBy === 'name'}
+                                      direction={skippedOrderBy === 'name' ? skippedOrder : 'asc'}
+                                      onClick={() => onSort('name')}
+                                    >
+                                      Ad Soyad
+                                    </TableSortLabel>
+                                  </TableCell>
+                                  <TableCell style={{ fontWeight: 800 }}>
+                                    <TableSortLabel
+                                      active={skippedOrderBy === 'detail'}
+                                      direction={skippedOrderBy === 'detail' ? skippedOrder : 'asc'}
+                                      onClick={() => onSort('detail')}
+                                    >
+                                      Detay
+                                    </TableSortLabel>
+                                  </TableCell>
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {pageRows.map((s, idx) => (
+                                  <TableRow key={`${s?.row ?? ''}-${idx}`} hover>
+                                    <TableCell>{s?.row ?? ''}</TableCell>
+                                    <TableCell style={{ fontWeight: 700, color: '#0c4a6e' }}>{s?.reason ?? ''}</TableCell>
+                                    <TableCell>{s?.tc ?? ''}</TableCell>
+                                    <TableCell>{s?.name ?? ''}</TableCell>
+                                    <TableCell style={{ color: '#334155' }}>{s?.detail ?? ''}</TableCell>
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+
+                          <TablePagination
+                            component="div"
+                            count={sorted.length}
+                            page={skippedPage}
+                            onPageChange={(_, newPage) => setSkippedPage(newPage)}
+                            rowsPerPage={skippedRowsPerPage}
+                            onRowsPerPageChange={(e) => { setSkippedRowsPerPage(parseInt(e.target.value, 10)); setSkippedPage(0); }}
+                            rowsPerPageOptions={[5, 10, 25, 50]}
+                            labelRowsPerPage="Satır/Sayfa"
+                          />
+                        </div>
+                      );
+                    })()}
+                  </div>
+                )}
+                {Array.isArray(excelResult.errors) && excelResult.errors.length > 0 && (
+                  <div style={{ marginTop: 6, color: '#b45309' }}>
+                    {excelResult.errors.length} satırda hata var (detay için backend response).
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -806,21 +1206,21 @@ export default function PersonnelPage() {
                     </div>
                   </div>
 
-                  {/* Tarih Durum */}
+                  {/* Tarihler */}
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                     <div>
                       <label style={{ display: 'block', fontSize: 13, fontWeight: 500, color: '#374151', marginBottom: 8 }}>İşe Başlama Tarihi</label>
-                      <input 
-                        type="date" 
-                        name="startDate" 
-                        value={form.startDate} 
-                        onChange={handleChange} 
-                        style={{ 
-                          width: '100%', 
-                          height: 36, 
-                          padding: '6px 10px', 
-                          border: '1px solid #d1d5db', 
-                          borderRadius: 4, 
+                      <input
+                        type="date"
+                        name="startDate"
+                        value={form.startDate}
+                        onChange={handleChange}
+                        style={{
+                          width: '100%',
+                          height: 36,
+                          padding: '6px 10px',
+                          border: '1px solid #d1d5db',
+                          borderRadius: 4,
                           fontSize: 14,
                           outline: 'none',
                           transition: 'border-color 0.2s ease',
@@ -831,27 +1231,51 @@ export default function PersonnelPage() {
                       />
                     </div>
                     <div>
-                      <label style={{ display: 'block', fontSize: 13, fontWeight: 500, color: '#374151', marginBottom: 8 }}>Durum</label>
-                      <select 
-                        name="status" 
-                        value={form.status} 
-                        onChange={handleChange} 
-                        style={{ 
-                          width: '100%', 
-                          height: 36, 
-                          padding: '6px 10px', 
-                          border: '1px solid #d1d5db', 
-                          borderRadius: 4, 
+                      <label style={{ display: 'block', fontSize: 13, fontWeight: 500, color: '#374151', marginBottom: 8 }}>İSG Temel Eğitim Belgesi Tarihi</label>
+                      <input
+                        type="date"
+                        name="isgTemelEgitimBelgesiTarihi"
+                        value={form.isgTemelEgitimBelgesiTarihi}
+                        onChange={handleChange}
+                        style={{
+                          width: '100%',
+                          height: 36,
+                          padding: '6px 10px',
+                          border: '1px solid #d1d5db',
+                          borderRadius: 4,
                           fontSize: 14,
                           outline: 'none',
-                          background: '#fff',
-                          cursor: 'pointer'
+                          transition: 'border-color 0.2s ease',
+                          background: '#fff'
                         }}
-                      >
-                        <option value="Active">Aktif</option>
-                        <option value="Inactive">Pasif</option>
-                      </select>
+                        onFocus={e => e.target.style.borderColor = '#3b82f6'}
+                        onBlur={e => e.target.style.borderColor = '#d1d5db'}
+                      />
                     </div>
+                  </div>
+
+                  {/* Durum */}
+                  <div>
+                    <label style={{ display: 'block', fontSize: 13, fontWeight: 500, color: '#374151', marginBottom: 8 }}>Durum</label>
+                    <select
+                      name="status"
+                      value={form.status}
+                      onChange={handleChange}
+                      style={{
+                        width: '100%',
+                        height: 36,
+                        padding: '6px 10px',
+                        border: '1px solid #d1d5db',
+                        borderRadius: 4,
+                        fontSize: 14,
+                        outline: 'none',
+                        background: '#fff',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      <option value="Active">Aktif</option>
+                      <option value="Inactive">Pasif</option>
+                    </select>
                   </div>
                 </div>
 
@@ -953,6 +1377,12 @@ export default function PersonnelPage() {
                     <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#6b7280', marginBottom: 4 }}>İşe Başlama Tarihi</label>
                     <div style={{ fontSize: 14, color: '#374151' }}>
                       {detailPersonnel.startDate ? new Date(detailPersonnel.startDate).toLocaleDateString('tr-TR') : '—'}
+                    </div>
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#6b7280', marginBottom: 4 }}>İSG Temel Eğitim Belgesi Tarihi</label>
+                    <div style={{ fontSize: 14, color: '#374151' }}>
+                      {detailPersonnel.isgTemelEgitimBelgesiTarihi ? new Date(detailPersonnel.isgTemelEgitimBelgesiTarihi).toLocaleDateString('tr-TR') : '—'}
                     </div>
                   </div>
                   <div>

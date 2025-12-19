@@ -93,7 +93,7 @@ services:
       MYSQL_USER: isg_user
       MYSQL_PASSWORD: isg_password_2024
     ports:
-      - "3307:3306"
+      - "13307:3306"
     volumes:
       - trainings_db_data:/var/lib/mysql
       - ./scripts/init-trainings-db.sql:/docker-entrypoint-initdb.d/init.sql
@@ -398,7 +398,7 @@ services:
       - ConnectionStrings__DefaultConnection=Server=risks_db;Port=3306;Database=risks_db;Uid=root;Pwd=isg_password_2024;AllowPublicKeyRetrieval=True;SslMode=None;
       - Jwt__SecretKey=ISG-System-Secret-Key-2024-Very-Long-Secret-For-JWT-Token-Generation
     ports:
-      - "8082:8082"
+      - "18082:8082"
     depends_on:
       risks_db:
         condition: service_healthy
@@ -510,26 +510,26 @@ services:
       timeout: 10s
       retries: 3
 
-  # İSG Expert Service
-  isg-expert-service:
-    build:
-      context: ./src/ISGExpertService
-      dockerfile: Dockerfile
-    container_name: isg-expert-service
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Production
-      - ASPNETCORE_URLS=http://+:8091
-      - CHATGPT_API_KEY=${CHATGPT_API_KEY}
-    ports:
-      - "8092:8091"
-    networks:
-      - isg_network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8091/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    restart: unless-stopped
+  # İSG Expert Service (temporarily disabled due to build errors)
+  # isg-expert-service:
+  #   build:
+  #     context: ./src/ISGExpertService
+  #     dockerfile: Dockerfile
+  #   container_name: isg-expert-service
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Production
+  #     - ASPNETCORE_URLS=http://+:8091
+  #     - CHATGPT_API_KEY=${CHATGPT_API_KEY}
+  #   ports:
+  #     - "8092:8091"
+  #   networks:
+  #     - isg_network
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:8091/health"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #   restart: unless-stopped
 
   # phpMyAdmin for database management
   phpmyadmin:
@@ -547,6 +547,17 @@ services:
       - risks_db
       - incidents_db
       - documents_db
+    networks:
+      - isg_network
+
+  # React Frontend (ReactApp)
+  reactapp:
+    build:
+      context: ./ReactApp
+      dockerfile: Dockerfile
+    container_name: reactapp
+    ports:
+      - "3000:5173"
     networks:
       - isg_network
 

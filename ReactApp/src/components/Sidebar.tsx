@@ -3,7 +3,10 @@ import { NavLink } from 'react-router-dom';
 
 const Sidebar: React.FC = () => {
   const [isExamsOpen, setIsExamsOpen] = useState(false);
+  const [isHrOpen, setIsHrOpen] = useState(false);
+  const [isActionsOpen, setIsActionsOpen] = useState(false);
   const [isActivitiesOpen, setIsActivitiesOpen] = useState(false);
+  const [isReportingOpen, setIsReportingOpen] = useState(false);
 
   return (
     <aside className="sidebar">
@@ -35,10 +38,60 @@ const Sidebar: React.FC = () => {
             )}
           </li>
 
-          <li><NavLink to="/personnel">Personel</NavLink></li>
+          {/* İnsan Kaynakları alt menüsü */}
+          <li>
+            <button
+              className={`sidebar-dropbtn ${isHrOpen ? 'open' : ''}`}
+              onClick={() => setIsHrOpen(v => !v)}
+              aria-expanded={isHrOpen}
+              aria-controls="sidebar-hr-submenu"
+            >
+              <span>İnsan Kaynakları</span>
+              <span className="chevron" aria-hidden="true" style={{ marginLeft: 'auto', display: 'inline-flex', alignItems: 'center' }}>
+                <svg width="12" height="12" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M1.5 3.5L5 7l3.5-3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </span>
+            </button>
+            {isHrOpen && (
+              <ul id="sidebar-hr-submenu" className="submenu">
+                <li><NavLink to="/personnel">Personel</NavLink></li>
+                <li><NavLink to="/personnel/blacklist">Kara Liste</NavLink></li>
+                <li><NavLink to="/personnel/assignments">Çalışan Görevlendirme</NavLink></li>
+                <li><NavLink to="/personnel/search">Çalışan Ara</NavLink></li>
+                <li><NavLink to="/personnel/approved">Onaylı Çalışan</NavLink></li>
+                <li><NavLink to="/personnel/sgk-query">Sgk Sorgula</NavLink></li>
+              </ul>
+            )}
+          </li>
           <li><NavLink to="/documents">Dökümanlar</NavLink></li>
           <li><NavLink to="/incidents">Olaylar</NavLink></li>
           <li><NavLink to="/legislation">Mevzuat Uyum</NavLink></li>
+
+          {/* Önlem Al alt menüsü */}
+          <li>
+            <button
+              className={`sidebar-dropbtn ${isActionsOpen ? 'open' : ''}`}
+              onClick={() => setIsActionsOpen(v => !v)}
+              aria-expanded={isActionsOpen}
+              aria-controls="sidebar-actions-submenu"
+            >
+              <span>Önlem Al</span>
+              <span className="chevron" aria-hidden="true" style={{ marginLeft: 'auto', display: 'inline-flex', alignItems: 'center' }}>
+                <svg width="12" height="12" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M1.5 3.5L5 7l3.5-3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </span>
+            </button>
+            {isActionsOpen && (
+              <ul id="sidebar-actions-submenu" className="submenu">
+                <li><NavLink to="/activities/dof-followup">DF Listesi</NavLink></li>
+                <li><NavLink to="/special-defined-and-identification-register">Özel Tanımlı ve Tespit Defteri</NavLink></li>
+                <li><NavLink to="/incidents">İş Kazaları</NavLink></li>
+                <li><NavLink to="/non-conformities">Uygunsuzluk</NavLink></li>
+              </ul>
+            )}
+          </li>
 
           {/* Faaliyetler alt menüsü */}
           <li>
@@ -71,7 +124,31 @@ const Sidebar: React.FC = () => {
               </ul>
             )}
           </li>
-          <li><NavLink to="/reporting">Raporlama</NavLink></li>
+
+          {/* Raporlama alt menüsü */}
+          <li>
+            <button
+              className={`sidebar-dropbtn ${isReportingOpen ? 'open' : ''}`}
+              onClick={() => setIsReportingOpen(v => !v)}
+              aria-expanded={isReportingOpen}
+              aria-controls="sidebar-reporting-submenu"
+            >
+              <span>Raporlama</span>
+              <span className="chevron" aria-hidden="true" style={{ marginLeft: 'auto', display: 'inline-flex', alignItems: 'center' }}>
+                <svg width="12" height="12" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M1.5 3.5L5 7l3.5-3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </span>
+            </button>
+            {isReportingOpen && (
+              <ul id="sidebar-reporting-submenu" className="submenu">
+                <li><NavLink to="/reporting">Genel Raporlar</NavLink></li>
+                <li><NavLink to="/reporting?tab=training">Eğitim Raporu</NavLink></li>
+                <li><NavLink to="/reporting/tetkik">Tetkik Raporları</NavLink></li>
+              </ul>
+            )}
+          </li>
+
           <li><NavLink to="/risk-analysis">Risk Analizi</NavLink></li>
           <li><NavLink to="/non-conformities">Uygunsuzluklar</NavLink></li>
           <li><NavLink to="/isg-expert">İSG Uzman Asistanı</NavLink></li>

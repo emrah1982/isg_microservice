@@ -129,6 +129,7 @@ public class PersonnelDocumentsController : ControllerBase
         var originalCt = request.File.ContentType?.ToLowerInvariant() ?? string.Empty;
         var ct = originalCt;
         var fileExtension = Path.GetExtension(request.File.FileName)?.ToLowerInvariant() ?? string.Empty;
+        var type = (request.DocumentType ?? string.Empty).Trim();
         // Normalize some browsers sending generic or legacy types
         if (string.IsNullOrWhiteSpace(ct) || ct == "application/octet-stream")
         {
@@ -155,19 +156,21 @@ public class PersonnelDocumentsController : ControllerBase
         catch {}
 
         // Determine allowed types by document type
-        var type = (request.DocumentType ?? string.Empty).Trim();
         bool allowImage = false;
         bool allowPdf = true; // PDF is generally allowed
 
-        if (type == DocumentTypes.DriverLicense || type == DocumentTypes.PersonnelPhoto)
+        if (type == DocumentTypes.DriverLicense || type == DocumentTypes.PersonnelPhoto || 
+            type == DocumentTypes.IdentityCard || type == DocumentTypes.MarriageCertificate ||
+            type == DocumentTypes.SpouseIdCard || type == DocumentTypes.ChildrenIdCard)
         {
-            // Allow images for driver license and personnel photo
+            // Allow images for ID cards, photos, and personal documents
             allowImage = true;
         }
         else if (type == DocumentTypes.Certificate || type == DocumentTypes.InternalTrainingCertificate ||
-                 type == DocumentTypes.ExternalTrainingCertificate || type == DocumentTypes.IsoCertificates)
+                 type == DocumentTypes.ExternalTrainingCertificate || type == DocumentTypes.IsoCertificates ||
+                 type == DocumentTypes.Diploma)
         {
-            // Certificates: allow both PDF and images
+            // Certificates and diplomas: allow both PDF and images
             allowImage = true;
         }
 

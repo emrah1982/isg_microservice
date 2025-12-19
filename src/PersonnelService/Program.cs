@@ -37,7 +37,8 @@ var app = builder.Build();
 var uploadsPath = Path.Combine(app.Environment.ContentRootPath, "wwwroot", "uploads", "documents");
 Directory.CreateDirectory(uploadsPath);
 
-// Order: CORS before endpoints
+// Routing + CORS (CORS must run after routing to apply to endpoints/preflight)
+app.UseRouting();
 app.UseCors(OpenCors);
 app.UseStaticFiles(); // Enable static file serving
 app.UseSwagger();
@@ -45,7 +46,7 @@ app.UseSwaggerUI();
 
 app.MapGet("/health", () => Results.Ok("OK"));
 
-app.MapControllers().RequireCors(OpenCors);
+app.MapControllers();
 
 // Ensure DB exists
 using (var scope = app.Services.CreateScope())
@@ -76,6 +77,50 @@ using (var scope = app.Services.CreateScope())
               WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'Personnel' AND COLUMN_NAME = 'CompanyId'
             );
             SET @ddl := IF(@col_exists = 0, 'ALTER TABLE `Personnel` ADD COLUMN `CompanyId` INT NULL, ADD INDEX `IX_Personnel_CompanyId` (`CompanyId`);', 'SELECT 1');
+            PREPARE stmt FROM @ddl; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+        ");
+
+        // Add citizenship/nationality columns if missing (real-world foreign personnel)
+        await db.Database.ExecuteSqlRawAsync(@"
+            SET @col_exists := (
+              SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
+              WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'Personnel' AND COLUMN_NAME = 'CitizenshipType'
+            );
+            SET @ddl := IF(@col_exists = 0, 'ALTER TABLE `Personnel` ADD COLUMN `CitizenshipType` VARCHAR(16) NOT NULL DEFAULT \'TR\' AFTER `NationalId`, ADD INDEX `IX_Personnel_CitizenshipType` (`CitizenshipType`);', 'SELECT 1');
+            PREPARE stmt FROM @ddl; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+        ");
+        await db.Database.ExecuteSqlRawAsync(@"
+            SET @col_exists := (
+              SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
+              WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'Personnel' AND COLUMN_NAME = 'Nationality'
+            );
+            SET @ddl := IF(@col_exists = 0, 'ALTER TABLE `Personnel` ADD COLUMN `Nationality` VARCHAR(80) NULL AFTER `CitizenshipType`;', 'SELECT 1');
+            PREPARE stmt FROM @ddl; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+        ");
+        await db.Database.ExecuteSqlRawAsync(@"
+            SET @col_exists := (
+              SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
+              WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'Personnel' AND COLUMN_NAME = 'ForeignIdentityNumber'
+            );
+            SET @ddl := IF(@col_exists = 0, 'ALTER TABLE `Personnel` ADD COLUMN `ForeignIdentityNumber` VARCHAR(30) NULL AFTER `Nationality`, ADD INDEX `IX_Personnel_ForeignIdentityNumber` (`ForeignIdentityNumber`);', 'SELECT 1');
+            PREPARE stmt FROM @ddl; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+        ");
+        await db.Database.ExecuteSqlRawAsync(@"
+            SET @col_exists := (
+              SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
+              WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'Personnel' AND COLUMN_NAME = 'PassportNumber'
+            );
+            SET @ddl := IF(@col_exists = 0, 'ALTER TABLE `Personnel` ADD COLUMN `PassportNumber` VARCHAR(30) NULL AFTER `ForeignIdentityNumber`, ADD INDEX `IX_Personnel_PassportNumber` (`PassportNumber`);', 'SELECT 1');
+            PREPARE stmt FROM @ddl; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+        ");
+
+        // Add IsgTemelEgitimBelgesiTarihi to Personnel table if missing
+        await db.Database.ExecuteSqlRawAsync(@"
+            SET @col_exists := (
+              SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
+              WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'Personnel' AND COLUMN_NAME = 'IsgTemelEgitimBelgesiTarihi'
+            );
+            SET @ddl := IF(@col_exists = 0, 'ALTER TABLE `Personnel` ADD COLUMN `IsgTemelEgitimBelgesiTarihi` DATETIME(6) NULL AFTER `StartDate`;', 'SELECT 1');
             PREPARE stmt FROM @ddl; EXECUTE stmt; DEALLOCATE PREPARE stmt;
         ");
 
@@ -141,17 +186,106 @@ using (var scope = app.Services.CreateScope())
             Console.WriteLine($"PersonnelDocuments table creation error: {ex.Message}");
         }
 
+        // Create PersonnelEmploymentEvents table if not exists
+        try
+        {
+            await db.Database.ExecuteSqlRawAsync(@"
+                CREATE TABLE IF NOT EXISTS `PersonnelEmploymentEvents` (
+                  `Id` INT NOT NULL AUTO_INCREMENT,
+                  `PersonnelId` INT NOT NULL,
+                  `EventType` VARCHAR(16) NOT NULL,
+                  `EventDate` DATETIME(6) NOT NULL,
+                  `Source` VARCHAR(64) NULL,
+                  `Notes` VARCHAR(1000) NULL,
+                  `CreatedAt` DATETIME(6) NOT NULL,
+                  PRIMARY KEY (`Id`),
+                  KEY `IX_PersonnelEmploymentEvents_PersonnelId` (`PersonnelId`),
+                  KEY `IX_PersonnelEmploymentEvents_EventType` (`EventType`),
+                  KEY `IX_PersonnelEmploymentEvents_EventDate` (`EventDate`),
+                  KEY `IX_PersonnelEmploymentEvents_PersonnelId_EventType_EventDate` (`PersonnelId`, `EventType`, `EventDate`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+            ");
+
+            // Add foreign key constraint separately (best-effort)
+            try
+            {
+                await db.Database.ExecuteSqlRawAsync(@"
+                    ALTER TABLE `PersonnelEmploymentEvents`
+                    ADD CONSTRAINT `FK_PersonnelEmploymentEvents_Personnel_PersonnelId`
+                    FOREIGN KEY (`PersonnelId`) REFERENCES `Personnel`(`Id`) ON DELETE CASCADE;
+                ");
+            }
+            catch { /* ignore if FK already exists */ }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"PersonnelEmploymentEvents table creation error: {ex.Message}");
+        }
+
+        // Create BlacklistEntries table if not exists (Personnel blacklist / HR)
+        try
+        {
+            await db.Database.ExecuteSqlRawAsync(@"
+                CREATE TABLE IF NOT EXISTS `BlacklistEntries` (
+                  `Id` INT NOT NULL AUTO_INCREMENT,
+                  `PersonnelId` INT NULL,
+                  `CompanyId` INT NULL,
+                  `FullName` VARCHAR(200) NULL,
+                  `NationalId` VARCHAR(11) NULL,
+                  `ForeignIdentityNumber` VARCHAR(30) NULL,
+                  `PassportNumber` VARCHAR(30) NULL,
+                  `Nationality` VARCHAR(80) NULL,
+                  `Category` VARCHAR(64) NOT NULL,
+                  `Reason` VARCHAR(1000) NOT NULL,
+                  `RiskLevel` VARCHAR(16) NOT NULL,
+                  `Source` VARCHAR(64) NULL,
+                  `DecisionNumber` VARCHAR(64) NULL,
+                  `StartDate` DATETIME(6) NOT NULL,
+                  `EndDate` DATETIME(6) NULL,
+                  `IsActive` TINYINT(1) NOT NULL DEFAULT 1,
+                  `Notes` VARCHAR(2000) NULL,
+                  `CreatedAt` DATETIME(6) NOT NULL,
+                  `UpdatedAt` DATETIME(6) NOT NULL,
+                  PRIMARY KEY (`Id`),
+                  KEY `IX_BlacklistEntries_PersonnelId` (`PersonnelId`),
+                  KEY `IX_BlacklistEntries_CompanyId` (`CompanyId`),
+                  KEY `IX_BlacklistEntries_IsActive` (`IsActive`),
+                  KEY `IX_BlacklistEntries_StartDate` (`StartDate`),
+                  KEY `IX_BlacklistEntries_Category` (`Category`),
+                  KEY `IX_BlacklistEntries_RiskLevel` (`RiskLevel`),
+                  KEY `IX_BlacklistEntries_NationalId` (`NationalId`),
+                  KEY `IX_BlacklistEntries_ForeignIdentityNumber` (`ForeignIdentityNumber`),
+                  KEY `IX_BlacklistEntries_PassportNumber` (`PassportNumber`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+            ");
+
+            // Foreign key is best-effort (ignore if exists)
+            try
+            {
+                await db.Database.ExecuteSqlRawAsync(@"
+                    ALTER TABLE `BlacklistEntries`
+                    ADD CONSTRAINT `FK_BlacklistEntries_Personnel_PersonnelId`
+                    FOREIGN KEY (`PersonnelId`) REFERENCES `Personnel`(`Id`) ON DELETE SET NULL;
+                ");
+            }
+            catch { }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"BlacklistEntries table creation error: {ex.Message}");
+        }
+
         // Clean and recreate PersonnelDocuments with proper data
         await db.Database.ExecuteSqlRawAsync(@"DELETE FROM `PersonnelDocuments`;");
         
-        // Insert test documents with proper NULL handling
+        // Insert test documents with types that exactly match DocumentTypes constants
         await db.Database.ExecuteSqlRawAsync(@"
             INSERT INTO `PersonnelDocuments` 
             (`PersonnelId`, `DocumentType`, `FileName`, `StoredPath`, `FileSize`, `ContentType`, `IssueDate`, `ExpiryDate`, `IssuingAuthority`, `DocumentNumber`, `Status`, `Notes`, `CreatedAt`, `UpdatedAt`) 
             VALUES 
-            (1, 'Sabıka Kaydı', 'sabika_kaydi.pdf', 'uploads/documents/sabika_kaydi.pdf', 1024000, 'application/pdf', '2024-01-15', '2025-01-15', 'Emniyet Müdürlüğü', 'SK-2024-001', 'Active', 'Test sabıka kaydı belgesi', NOW(6), NOW(6)),
-            (1, 'Diploma', 'diploma.pdf', 'uploads/documents/diploma.pdf', 2048000, 'application/pdf', '2020-06-30', NULL, 'İstanbul Üniversitesi', 'DIP-2020-123', 'Active', 'Bilgisayar Mühendisliği Diploması', NOW(6), NOW(6)),
-            (1, 'Sağlık Raporu', 'saglik_raporu.pdf', 'uploads/documents/saglik_raporu.pdf', 512000, 'application/pdf', '2024-09-01', '2025-09-01', 'Devlet Hastanesi', 'SR-2024-456', 'Active', 'Genel sağlık raporu', NOW(6), NOW(6));
+            (1, 'Adli sicil kaydı', 'sabika_kaydi.pdf', 'uploads/documents/sabika_kaydi.pdf', 1024000, 'application/pdf', '2024-01-15', '2025-01-15', 'Emniyet Müdürlüğü', 'SK-2024-001', 'Active', 'Test sabıka kaydı belgesi', NOW(6), NOW(6)),
+            (1, 'Diploma fotokopisi', 'diploma.pdf', 'uploads/documents/diploma.pdf', 2048000, 'application/pdf', '2020-06-30', NULL, 'İstanbul Üniversitesi', 'DIP-2020-123', 'Active', 'Bilgisayar Mühendisliği Diploması', NOW(6), NOW(6)),
+            (1, 'Sağlık raporu', 'saglik_raporu.pdf', 'uploads/documents/saglik_raporu.pdf', 512000, 'application/pdf', '2024-09-01', '2025-09-01', 'Devlet Hastanesi', 'SR-2024-456', 'Active', 'Genel sağlık raporu', NOW(6), NOW(6));
         ");
 
         // Optional: seed default companies if not exist

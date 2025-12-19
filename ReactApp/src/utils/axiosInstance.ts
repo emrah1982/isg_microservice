@@ -20,7 +20,7 @@ function resolveServiceBase(pathname: string): string {
     case 'trainings':
       return 'http://localhost:8081';
     case 'risks':
-      return 'http://localhost:8082';
+      return 'http://localhost:18082';
     case 'incidents':
       return 'http://localhost:8083';
     case 'documents':
@@ -42,6 +42,8 @@ function resolveServiceBase(pathname: string): string {
       return 'http://localhost:8087';
     case 'personnel':
     case 'companies':
+      return 'http://localhost:8089';
+    case 'blacklist':
       return 'http://localhost:8089';
     case 'isgexpert':
       return 'http://localhost:8092';

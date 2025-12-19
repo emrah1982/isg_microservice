@@ -3,6 +3,7 @@ import { axiosInstance } from '@utils/axiosInstance';
 export type Incident = {
   id: string;
   title: string;
+  type?: string;
   severity: string;
   occurredAt: string;
   location?: string;
@@ -39,6 +40,7 @@ export async function fetchIncidents(): Promise<Incident[]> {
   return list.map(i => ({
     id: String(i.id),
     title: i.title,
+    type: i.type ?? undefined,
     severity: i.severity ?? '',
     occurredAt: i.incidentDate,
     location: i.location ?? undefined,
@@ -68,6 +70,7 @@ export async function createIncident(payload: CreateIncidentInput): Promise<Inci
   return {
     id: String(i.id),
     title: i.title,
+    type: i.type ?? undefined,
     severity: i.severity ?? '',
     occurredAt: i.incidentDate,
     location: i.location ?? undefined,
@@ -82,6 +85,7 @@ export async function fetchIncidentById(id: string): Promise<Incident> {
   return {
     id: String(i.id),
     title: i.title,
+    type: i.type ?? undefined,
     severity: i.severity ?? '',
     occurredAt: i.incidentDate,
     location: i.location ?? undefined,

@@ -25,14 +25,14 @@ public class PersonnelDocument
 // Belge türleri için enum
 public static class DocumentTypes
 {
-    public const string CriminalRecord = "Sabıka Kaydı";
-    public const string ResidencePermit = "İkametgah Belgesi";
-    public const string Diploma = "Diploma";
-    public const string HealthReport = "Sağlık Raporu";
+    public const string CriminalRecord = "Adli sicil kaydı";
+    public const string ResidencePermit = "İkametgah belgesi";
+    public const string Diploma = "Diploma fotokopisi";
+    public const string HealthReport = "Sağlık raporu";
     public const string WorkPermit = "Çalışma İzni";
-    public const string IdentityCard = "Kimlik Fotokopisi";
+    public const string IdentityCard = "Nüfus cüzdanı fotokopisi";
     public const string TaxCertificate = "Vergi Levhası";
-    public const string SocialSecurityCard = "SGK Belgesi";
+    public const string SocialSecurityCard = "SGK işe giriş bildirgesi";
     public const string BloodTest = "Kan Tahlili";
     public const string VaccinationCard = "Aşı Kartı";
     public const string Other = "Diğer";
@@ -41,37 +41,54 @@ public static class DocumentTypes
     public const string InternalTrainingCertificate = "İç Eğitim Sertifikası";
     public const string ExternalTrainingCertificate = "Dış Eğitim Sertifikası";
     public const string DriverLicense = "Ehliyet";
-    public const string PersonnelPhoto = "Personel Fotoğrafı";
+    public const string PersonnelPhoto = "Vesikalık fotoğraf";
+    public const string EmploymentContract = "İş sözleşmesi";
+    public const string MilitaryStatus = "Askerlik durum belgesi";
+    public const string JobApplicationForm = "İş başvuru formu";
+    public const string MarriageCertificate = "Evlilik cüzdanı fotokopisi";
+    public const string SpouseIdCard = "Eşinin nüfus cüzdanı fotokopisi";
+    public const string ChildrenIdCard = "Çocukların nüfus cüzdanı fotokopisi";
+    public const string SgkExitDocument = "SGK çıkış belgesi";
+    public const string LastSalarySlip = "Son maaş bordrosu";
 
     public static readonly string[] AllTypes = {
-        CriminalRecord,
-        ResidencePermit,
-        Diploma,
-        HealthReport,
-        WorkPermit,
         IdentityCard,
-        TaxCertificate,
         SocialSecurityCard,
+        EmploymentContract,
+        PersonnelPhoto,
+        MilitaryStatus,
+        CriminalRecord,
+        JobApplicationForm,
+        ResidencePermit,
+        HealthReport,
+        Diploma,
+        MarriageCertificate,
+        SpouseIdCard,
+        ChildrenIdCard,
+        SgkExitDocument,
+        LastSalarySlip,
+        WorkPermit,
+        TaxCertificate,
         BloodTest,
         VaccinationCard,
-        // Yeni eklenenler
         Certificate,
         IsoCertificates,
         InternalTrainingCertificate,
         ExternalTrainingCertificate,
         DriverLicense,
-        PersonnelPhoto,
         Other
     };
 
     // Zorunlu belgeler
     public static readonly string[] RequiredDocuments = {
-        CriminalRecord,
-        ResidencePermit,
-        Diploma,
-        HealthReport,
         IdentityCard,
-        DriverLicense,
-        PersonnelPhoto
+        SocialSecurityCard,
+        EmploymentContract,
+        PersonnelPhoto,
+        CriminalRecord,
+        JobApplicationForm,
+        ResidencePermit,
+        HealthReport,
+        Diploma
     };
 }

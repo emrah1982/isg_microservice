@@ -57,59 +57,64 @@ Başarı Kriterleri: [Başarı kriterlerini paragraf şeklinde açıkla]
 Gözden Geçirme Periyodu: [Periyot bilgisi]
 İlk Gözden Geçirme Tarihi: [YYYY-MM-DD]
 
-        61→Kurumsal Yönetim Perspektifi
-        62→Entegre Sistemler: [Hangi yönetim sistemleriyle entegre edileceğini paragraf şeklinde açıkla]
-        63→İSG Kurulu Önerisi: [İSG kurulu için önerileri paragraf şeklinde açıkla]
-        64→Dijitalleşme Önerileri: [Dijital çözüm önerilerini paragraf şeklinde açıkla]
-        65→ESG Entegrasyon: [ESG entegrasyon önerilerini paragraf şeklinde açıkla]
-        66→Özet (Soru / Cevap)
-        67→[En az 5 adet Soru-Cevap çifti üret. Her soru kısa ve net olsun; cevap öz ve uygulanabilir olsun. Örn: \nSoru: ...\nCevap: ...]
-        68→Düzeltme talep eden tarafından doldurulur: Takip gerekli değil / Takip gerekli Açıklama:
-        69→[Takip gerekliliğini açıkça belirt ve kısa bir açıklama yaz.]
-        70→--- RAPOR SONU ---
-        return @"🏢 İş Sağlığı ve Güvenliği (İSG) Uzman Asistanı – Kurumsal Versiyon
-Sen Türkiye'de faaliyet gösteren kurumsal düzeyde deneyimli bir İş Sağlığı ve Güvenliği uzmanısın.
-Tüm yanıtlarını yasal mevzuat, ISO 45001:2018 gereklilikleri ve kurumsal İSG yönetim sistemleri ile uyumlu olacak şekilde ver.
+Kurumsal Yönetim Perspektifi
+Entegre Sistemler: [Hangi yönetim sistemleriyle entegre edileceğini paragraf şeklinde açıkla]
+İSG Kurulu Önerisi: [İSG kurulu için önerileri paragraf şeklinde açıkla]
+Dijitalleşme Önerileri: [Dijital çözüm önerilerini paragraf şeklinde açıkla]
+ESG Entegrasyon: [ESG entegrasyon önerilerini paragraf şeklinde açıkla]
+Özet (Soru / Cevap)
+[En az 5 adet Soru-Cevap çifti üret. Her soru kısa ve net olsun; cevap öz ve uygulanabilir olsun. Örn: \nSoru: ...\nCevap: ...]
+Düzeltme talep eden tarafından doldurulur: Takip gerekli değil / Takip gerekli Açıklama:
+[Takip gerekliliğini açıkça belirt ve kısa bir açıklama yaz.]
+--- RAPOR SONU ---
+";
+    }
 
-📜 YETKİ ALANLARIN:
-• Mevzuat Uyumluluğu: 6331 sayılı İş Sağlığı ve Güvenliği Kanunu, İlgili yönetmelik, tebliğ, genelge, İş Müfettişi denetim kriterleri
-• ISO 45001:2018 Uyum: Liderlik ve çalışan katılımı (madde 5), Risk & fırsat yönetimi (madde 6), Destekleyici süreçler (madde 7), Operasyonel kontrol (madde 8), Performans değerlendirme (madde 9), Sürekli iyileştirme (madde 10)
-• Uluslararası Standartlar ve Trendler: ILO sözleşmeleri, ESG raporlama kriterleri, Dijital İSG çözümleri (IoT, yapay zekâ, big data)
+    private string GetBaseISGPrompt()
+    {
+        return @"Is Sagligi ve Guvenligi (ISG) Uzman Asistani - Kurumsal Versiyon
+Sen Turkiye'de faaliyet gosteren kurumsal duzeyde deneyimli bir Is Sagligi ve Guvenligi uzmansin.
+Tum yanitlarini yasal mevzuat, ISO 45001:2018 gereklilikleri ve kurumsal ISG yonetim sistemleri ile uyumlu olacak sekilde ver.
 
-UYGUNSUZLUK YÖNETİMİ RAPORU formatında analiz yap:
-1. UYGUNSUZLUK ANALİZİ (Tanım, Kategori, Risk Derecesi, Yasal Dayanak, İlgili Paydaşlar)
-2. ACİL AKSİYON PLANI (0–24 Saat)
-3. DÜZELTİCİ FAALİYETLER (Kök Neden Temelli)
-4. ÖNLEYİCİ İYİLEŞTİRMELER (Tekrar Önleme)
-5. PERFORMANS İZLEME (KPI & Göstergeler)
-6. ETKİNLİK VE GÖZDEN GEÇİRME
-7. KURUMSAL YÖNETİM PERSPEKTİFİ";
+YETKI ALANLARIN:
+- Mevzuat Uyumlulugu: 6331 sayili Is Sagligi ve Guvenligi Kanunu, Ilgili yonetmelik, teblig, genelge, Is Mufettisi denetim kriterleri
+- ISO 45001:2018 Uyum: Liderlik ve calisan katilimi (madde 5), Risk ve firsat yonetimi (madde 6), Destekleyici surecler (madde 7), Operasyonel kontrol (madde 8), Performans degerlendirme (madde 9), Surekli iyilestirme (madde 10)
+- Uluslararasi Standartlar ve Trendler: ILO sozlesmeleri, ESG raporlama kriterleri, Dijital ISG cozumleri (IoT, yapay zeka, big data)
+
+UYGUNSUZLUK YONETIMI RAPORU formatinda analiz yap:
+1. UYGUNSUZLUK ANALIZI (Tanim, Kategori, Risk Derecesi, Yasal Dayanak, Ilgili Paydaslar)
+2. ACIL AKSIYON PLANI (0-24 Saat)
+3. DUZELTICI FAALIYETLER (Kok Neden Temelli)
+4. ONLEYICI IYILESTIRMELER (Tekrar Onleme)
+5. PERFORMANS IZLEME (KPI ve Gostergeler)
+6. ETKINLIK VE GOZDEN GECIRME
+7. KURUMSAL YONETIM PERSPEKTIFI";
     }
 
     private string BuildContextualInfo(ISGAnalysisRequest request)
     {
-        var context = "📋 KURUMSAL BAĞLAM BİLGİLERİ:\n";
+        var context = "KURUMSAL BAGLAM BILGILERI:\n";
         
         if (!string.IsNullOrEmpty(request.SirketAdi))
-            context += $"• Şirket: {request.SirketAdi}\n";
+            context += $"- Sirket: {request.SirketAdi}\n";
         
         if (!string.IsNullOrEmpty(request.SektorBilgisi))
-            context += $"• Sektör: {request.SektorBilgisi}\n";
+            context += $"- Sektor: {request.SektorBilgisi}\n";
         
         if (!string.IsNullOrEmpty(request.CalisanSayisi))
-            context += $"• Çalışan Sayısı: {request.CalisanSayisi}\n";
+            context += $"- Calisan Sayisi: {request.CalisanSayisi}\n";
         
         if (!string.IsNullOrEmpty(request.Departman))
-            context += $"• Departman: {request.Departman}\n";
+            context += $"- Departman: {request.Departman}\n";
         
         if (!string.IsNullOrEmpty(request.Lokasyon))
-            context += $"• Lokasyon: {request.Lokasyon}\n";
+            context += $"- Lokasyon: {request.Lokasyon}\n";
         
-        context += $"• ISO 45001 Sertifikası: {(request.ISO45001Sertifikasi ? "Mevcut" : "Mevcut Değil")}\n";
+        context += $"- ISO 45001 Sertifikasi: {(request.ISO45001Sertifikasi ? "Mevcut" : "Mevcut Degil")}\n";
         
         if (request.EkBilgiler?.Any() == true)
         {
-            context += "• Ek Bilgiler:\n";
+            context += "- Ek Bilgiler:\n";
             foreach (var bilgi in request.EkBilgiler)
             {
                 context += $"  - {bilgi}\n";
@@ -121,26 +126,26 @@ UYGUNSUZLUK YÖNETİMİ RAPORU formatında analiz yap:
 
     private string BuildAnalysisRequest(ISGAnalysisRequest request)
     {
-        return $@"🚨 ANALİZ TALEBİ:
-Belirtilen uygunsuzluğu ISO 45001 ve Türk İSG mevzuatına uyumlu kurumsal formatta analiz et ve çözüm önerisi sun:
+        return $@"ANALIZ TALEBI:
+Belirtilen uygunsuzlugu ISO 45001 ve Turk ISG mevzuatina uyumlu kurumsal formatta analiz et ve cozum onerisi sun:
 
 UYGUNSUZLUK: {request.Uygunsuzluk}
 
-Bu uygunsuzluk için kapsamlı bir kurumsal İSG analizi yap ve yukarıdaki JSON formatında yanıt ver.";
+Bu uygunsuzluk icin kapsamli bir kurumsal ISG analizi yap ve yukaridaki JSON formatinda yanit ver.";
     }
 
     public string GenerateSimpleISGPrompt(string uygunsuzluk)
     {
-        return $@"Sen Türkiye’de faaliyet gösteren deneyimli bir İş Sağlığı ve Güvenliği uzmanısın.
-Aşağıdaki şablonu kullanarak verilen uygunsuzluk bilgisini profesyonel bir İSG raporuna dönüştür.
-Cevabı her zaman aynı şablon yapısıyla ver:
+        return $@"Sen Turkiye'de faaliyet gosteren deneyimli bir Is Sagligi ve Guvenligi uzmansin.
+Asagidaki sablonu kullanarak verilen uygunsuzluk bilgisini profesyonel bir ISG raporuna donustur.
+Cevabi her zaman ayni sablon yapisiyla ver:
 
-- Uygunsuzluğun Tanımı:
-- Uygunsuzluğun Kök Nedeni: insan, Malzeme, Makine, Metot, Doğa (Yağmur, toprak kayması, dolu, rüzgar, deprem, sel vs) Açıklama:
-- Uygunsuzluğun Giderilmesi için Planlanan Düzeltici Faaliyetler ve Düzeltmeler:
-- Uygunsuzluğun tekrarını önlemek için yapılacak iyileştirmeler:
-- Düzeltme talep eden tarafından doldurulur: Takip gerekli değil / Takip gerekli Açıklama:
+- Uygunsuzlugun Tanimi:
+- Uygunsuzlugun Kok Nedeni: insan, Malzeme, Makine, Metot, Doga (Yagmur, toprak kaymasi, dolu, ruzgar, deprem, sel vs) Aciklama:
+- Uygunsuzlugun Giderilmesi icin Planlanan Duzeltici Faaliyetler ve Duzeltmeler:
+- Uygunsuzlugun tekrarini onlemek icin yapilacak iyilestirmeler:
+- Duzeltme talep eden tarafindan doldurulur: Takip gerekli degil / Takip gerekli Aciklama:
 
-Uygunsuzluk bilgisi: “{uygunsuzluk}”";
+Uygunsuzluk bilgisi: ""{uygunsuzluk}""";
     }
 }

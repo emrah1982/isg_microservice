@@ -9,6 +9,7 @@ import TrainingsPage from '@pages/Trainings/TrainingsPage';
 import TrainingDetailPage from '@pages/Trainings/TrainingDetailPage';
 import PersonnelPage from '@pages/Personnel/PersonnelPage';
 import PersonnelDocumentsPage from '@pages/Personnel/PersonnelDocumentsPage';
+import PersonnelBlacklistPage from '@pages/Personnel/PersonnelBlacklistPage';
 import ExamsPage from '@pages/Exams/ExamsPage';
 import TakeExamPage from '@pages/Exams/TakeExamPage';
 import DocumentsPage from '@pages/Documents/DocumentsPage';
@@ -18,6 +19,7 @@ import ExamAssignmentPage from '@pages/Exams/ExamAssignmentPage';
 import IncidentsPage from '@pages/Incidents/IncidentsPage';
 import IncidentDetailPage from '@pages/Incidents/IncidentDetailPage';
 import ReportingPage from '@pages/Reporting/ReportingPage';
+import TetkikReportsPage from '@pages/Reporting/TetkikReportsPage';
 import RiskAnalysisPage from '@pages/RiskAnalysis/RiskAnalysisPage';
 import VisionPage from '@pages/Vision/VisionPage';
 import LegislationCompliancePage from '@pages/Legislation/LegislationCompliancePage';
@@ -42,6 +44,7 @@ import ControlFormsPage from '@pages/Activities/ControlFormsPage';
 import ControlFormExecutionsPage from '@pages/Activities/ControlFormExecutions/ControlFormExecutionsPage';
 import FormTemplatesPage from '@pages/Activities/FormTemplatesPage';
 import RemindersPage from '@pages/Activities/RemindersPage';
+import SpecialDefinedAndIdentificationRegisterPage from '@pages/Actions/SpecialDefinedAndIdentificationRegisterPage';
 
 export default function App() {
   const { isAuthenticated } = useAuth();
@@ -119,6 +122,14 @@ export default function App() {
               }
             />
             <Route
+              path="/personnel/blacklist"
+              element={
+                <ProtectedRoute>
+                  <PersonnelBlacklistPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/personnel-documents"
               element={
                 <ProtectedRoute>
@@ -179,6 +190,24 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <ReportingPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/reporting/tetkik"
+              element={
+                <ProtectedRoute>
+                  <TetkikReportsPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/special-defined-and-identification-register"
+              element={
+                <ProtectedRoute>
+                  <SpecialDefinedAndIdentificationRegisterPage />
                 </ProtectedRoute>
               }
             />
