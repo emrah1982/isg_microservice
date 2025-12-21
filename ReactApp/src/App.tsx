@@ -13,7 +13,6 @@ import PersonnelBlacklistPage from '@pages/Personnel/PersonnelBlacklistPage';
 import ExamsPage from '@pages/Exams/ExamsPage';
 import TakeExamPage from '@pages/Exams/TakeExamPage';
 import DocumentsPage from '@pages/Documents/DocumentsPage';
-import GeneralDocumentsPage from '@pages/Documents/GeneralDocumentsPage';
 import OnlineArchivePage from '@pages/Documents/OnlineArchivePage';
 import DigitalArchivePage from '@pages/Documents/DigitalArchivePage';
 import HrDocumentsManagementPage from '@pages/Documents/HrDocumentsManagementPage';
@@ -189,14 +188,6 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <DocumentsPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/documents/general"
-              element={
-                <ProtectedRoute>
-                  <GeneralDocumentsPage />
                 </ProtectedRoute>
               }
             />

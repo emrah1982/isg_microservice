@@ -67,7 +67,6 @@ const Sidebar: React.FC = () => {
               </ul>
             )}
           </li>
-          <li><NavLink to="/documents">Dökümanlar</NavLink></li>
           <li><NavLink to="/legislation">Mevzuat Uyum</NavLink></li>
 
           {/* Doküman Yönetimi alt menüsü */}
@@ -87,7 +86,7 @@ const Sidebar: React.FC = () => {
             </button>
             {isDocumentManagementOpen && (
               <ul id="sidebar-documentmgmt-submenu" className="submenu">
-                <li><NavLink to="/documents/general">Genel Dokümanlar</NavLink></li>
+                <li><NavLink to="/documents">Dökümanlar</NavLink></li>
                 <li><NavLink to="/documents/online-archive">Çevrimiçi Belge Arşivi</NavLink></li>
                 <li><NavLink to="/documents/digital-archive">Dijital Belge Arşivi</NavLink></li>
                 <li>
