@@ -9,12 +9,12 @@ const Sidebar: React.FC = () => {
   const [isReportingOpen, setIsReportingOpen] = useState(false);
   const [isPlanningOpen, setIsPlanningOpen] = useState(false);
   const [isControlOpen, setIsControlOpen] = useState(false);
+  const [isSystemInfoOpen, setIsSystemInfoOpen] = useState(false);
 
   return (
     <aside className="sidebar">
       <nav>
         <ul>
-          <li><NavLink to="/users">Kullanıcılar</NavLink></li>
           <li><NavLink to="/trainings">Eğitimler</NavLink></li>
 
           {/* Sınav alt menüsü */}
@@ -67,7 +67,6 @@ const Sidebar: React.FC = () => {
             )}
           </li>
           <li><NavLink to="/documents">Dökümanlar</NavLink></li>
-          <li><NavLink to="/incidents">Olaylar</NavLink></li>
           <li><NavLink to="/legislation">Mevzuat Uyum</NavLink></li>
 
           {/* Önlem Al alt menüsü */}
@@ -151,8 +150,7 @@ const Sidebar: React.FC = () => {
             )}
           </li>
 
-          <li><NavLink to="/risk-analysis">Risk Analizi</NavLink></li>
-          <li><NavLink to="/non-conformities">Uygunsuzluklar</NavLink></li>
+          
 
           {/* Kontrol Et alt menüsü */}
           <li>
@@ -208,6 +206,33 @@ const Sidebar: React.FC = () => {
           </li>
           
           <li><NavLink to="/isg-expert">İSG Uzman Asistanı</NavLink></li>
+
+          {/* Sistem Bilgileri alt menüsü */}
+          <li>
+            <button
+              className={`sidebar-dropbtn ${isSystemInfoOpen ? 'open' : ''}`}
+              onClick={() => setIsSystemInfoOpen(v => !v)}
+              aria-expanded={isSystemInfoOpen}
+              aria-controls="sidebar-systeminfo-submenu"
+            >
+              <span>Sistem Bilgileri</span>
+              <span className="chevron" aria-hidden="true" style={{ marginLeft: 'auto', display: 'inline-flex', alignItems: 'center' }}>
+                <svg width="12" height="12" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M1.5 3.5L5 7l3.5-3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </span>
+            </button>
+            {isSystemInfoOpen && (
+              <ul id="sidebar-systeminfo-submenu" className="submenu">
+                <li><NavLink to="/users">Kullanıcılar</NavLink></li>
+                <li><NavLink to="/system/general-definitions">Genel Tanımlar</NavLink></li>
+                <li><NavLink to="/system/logs">Log Kayıtları</NavLink></li>
+                <li><NavLink to="/system/company-and-settings">Kurum Bilgileri ve Sistem Ayarları</NavLink></li>
+                <li><NavLink to="/system/control-topics-library">Kontrol Konuları Kütüphanesi</NavLink></li>
+                <li><NavLink to="/system/form-definitions">Form Tanımları</NavLink></li>
+              </ul>
+            )}
+          </li>
         </ul>
       </nav>
     </aside>
