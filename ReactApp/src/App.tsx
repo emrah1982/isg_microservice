@@ -13,6 +13,11 @@ import PersonnelBlacklistPage from '@pages/Personnel/PersonnelBlacklistPage';
 import ExamsPage from '@pages/Exams/ExamsPage';
 import TakeExamPage from '@pages/Exams/TakeExamPage';
 import DocumentsPage from '@pages/Documents/DocumentsPage';
+import GeneralDocumentsPage from '@pages/Documents/GeneralDocumentsPage';
+import OnlineArchivePage from '@pages/Documents/OnlineArchivePage';
+import DigitalArchivePage from '@pages/Documents/DigitalArchivePage';
+import HrDocumentsManagementPage from '@pages/Documents/HrDocumentsManagementPage';
+import HrSummaryPage from '@pages/Documents/HrSummaryPage';
 import ExamLoginPage from '@pages/Exams/ExamLoginPage';
 import PublicTakeExamPage from '@pages/Exams/PublicTakeExamPage';
 import ExamAssignmentPage from '@pages/Exams/ExamAssignmentPage';
@@ -58,6 +63,11 @@ import CorporatePlanningPage from '@pages/Planning/CorporatePlanningPage';
 import AnnualWorkPlanPage from '@pages/Planning/AnnualWorkPlanPage';
 import ActivityListPage from '@pages/Planning/ActivityListPage';
 import ControlMatrixPage from '@pages/Planning/ControlMatrixPage';
+import GeneralDefinitionsPage from '@pages/System/GeneralDefinitionsPage';
+import LogsPage from '@pages/System/LogsPage';
+import CompanyAndSettingsPage from '@pages/System/CompanyAndSettingsPage';
+import ControlTopicsLibraryPage from '@pages/System/ControlTopicsLibraryPage';
+import FormDefinitionsPage from '@pages/System/FormDefinitionsPage';
 
 export default function App() {
   const { isAuthenticated } = useAuth();
@@ -179,6 +189,46 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <DocumentsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/documents/general"
+              element={
+                <ProtectedRoute>
+                  <GeneralDocumentsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/documents/online-archive"
+              element={
+                <ProtectedRoute>
+                  <OnlineArchivePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/documents/digital-archive"
+              element={
+                <ProtectedRoute>
+                  <DigitalArchivePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/documents/hr-management"
+              element={
+                <ProtectedRoute>
+                  <HrDocumentsManagementPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/documents/hr-summary"
+              element={
+                <ProtectedRoute>
+                  <HrSummaryPage />
                 </ProtectedRoute>
               }
             />

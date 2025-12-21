@@ -10,6 +10,7 @@ const Sidebar: React.FC = () => {
   const [isPlanningOpen, setIsPlanningOpen] = useState(false);
   const [isControlOpen, setIsControlOpen] = useState(false);
   const [isSystemInfoOpen, setIsSystemInfoOpen] = useState(false);
+  const [isDocumentManagementOpen, setIsDocumentManagementOpen] = useState(false);
 
   return (
     <aside className="sidebar">
@@ -68,6 +69,36 @@ const Sidebar: React.FC = () => {
           </li>
           <li><NavLink to="/documents">Dökümanlar</NavLink></li>
           <li><NavLink to="/legislation">Mevzuat Uyum</NavLink></li>
+
+          {/* Doküman Yönetimi alt menüsü */}
+          <li>
+            <button
+              className={`sidebar-dropbtn ${isDocumentManagementOpen ? 'open' : ''}`}
+              onClick={() => setIsDocumentManagementOpen(v => !v)}
+              aria-expanded={isDocumentManagementOpen}
+              aria-controls="sidebar-documentmgmt-submenu"
+            >
+              <span>Doküman Yönetimi</span>
+              <span className="chevron" aria-hidden="true" style={{ marginLeft: 'auto', display: 'inline-flex', alignItems: 'center' }}>
+                <svg width="12" height="12" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M1.5 3.5L5 7l3.5-3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </span>
+            </button>
+            {isDocumentManagementOpen && (
+              <ul id="sidebar-documentmgmt-submenu" className="submenu">
+                <li><NavLink to="/documents/general">Genel Dokümanlar</NavLink></li>
+                <li><NavLink to="/documents/online-archive">Çevrimiçi Belge Arşivi</NavLink></li>
+                <li><NavLink to="/documents/digital-archive">Dijital Belge Arşivi</NavLink></li>
+                <li>
+                  <NavLink to="/documents/hr-management">IK Belge Yönetimi</NavLink>
+                  <ul className="submenu">
+                    <li><NavLink to="/documents/hr-summary">IK Belge Özet</NavLink></li>
+                  </ul>
+                </li>
+              </ul>
+            )}
+          </li>
 
           {/* Önlem Al alt menüsü */}
           <li>
