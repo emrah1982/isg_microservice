@@ -550,6 +550,41 @@ services:
     networks:
       - isg_network
 
+  # MySQL Database for Planning Service
+  planning_db:
+    image: mysql:8.0
+    container_name: planning_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: planning_db
+    ports:
+      - "3321:3306"
+    volumes:
+      - planning_db_data:/var/lib/mysql
+    networks:
+      - isg_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # Planning Service
+  planning-service:
+    build:
+      context: .
+      dockerfile: src/PlanningService/Dockerfile
+    container_name: planning-service
+    ports:
+      - "8094:8080"
+    depends_on:
+      planning_db:
+        condition: service_healthy
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=planning_db;Database=planning_db;User=root;Password=root;
+    networks:
+      - isg_network
+
   # React Frontend (ReactApp)
   reactapp:
     build:
@@ -581,6 +616,8 @@ volumes:
   activities_db_data:
     driver: local
   legislation_db_data:
+    driver: local
+  planning_db_data:
     driver: local
 
 networks:

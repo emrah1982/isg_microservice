@@ -69,6 +69,11 @@ function resolveServiceBase(pathname: string): string {
     case 'ppeassignments':
     case 'ppeissues':
       return 'http://localhost:8088';
+    case 'annualworkplans':
+    case 'emergencyplans':
+    case 'corporateplannings':
+    case 'activitylists':
+      return 'http://localhost:8094';
     // Note: nonconformities is part of ActivitiesService and is proxied via Vite in dev
     default:
       // Fallback to users-service for auth-related or generic calls
@@ -89,6 +94,13 @@ axiosInstance.interceptors.request.use((config) => {
     const url = config.url;
     const isPpeEndpoint = url.startsWith('/api/ppeitems') || url.startsWith('/api/ppeassignments') || url.startsWith('/api/ppeissues');
     const isPersonnelEndpoint = url.startsWith('/api/personnel') || url.startsWith('/api/auth') || url.startsWith('/api/companies');
+    // Convert URL to lowercase for case-insensitive comparison
+    const lowerUrl = url.toLowerCase();
+    const isPlanningEndpoint = 
+      lowerUrl.includes('/api/annualworkplans') ||
+      lowerUrl.includes('/api/emergencyplans') ||
+      lowerUrl.includes('/api/corporateplannings') ||
+      lowerUrl.includes('/api/activitylists');
     const isActivitiesEndpoint =
       url.startsWith('/api/correctiveactions') ||
       url.startsWith('/api/preventiveactions') ||
@@ -106,10 +118,15 @@ axiosInstance.interceptors.request.use((config) => {
       url.startsWith('/api/reminders');
     const isDev = typeof window !== 'undefined' && window.location && window.location.port === '5173';
     
-    console.log('AxiosInstance Debug:', { url, isDev, isActivitiesEndpoint, GATEWAY_URL });
+    console.log('AxiosInstance Debug:', { url, isDev, isActivitiesEndpoint, isPlanningEndpoint, GATEWAY_URL });
     
+    // Planning endpoints always go direct to port 8094
+    if (isPlanningEndpoint) {
+      config.baseURL = 'http://localhost:8094';
+      console.log('Setting baseURL to: http://localhost:8094 (Planning Service)');
+    }
     // In dev mode, use Vite proxy for Activities endpoints to avoid CORS issues
-    if (isDev && isActivitiesEndpoint) {
+    else if (isDev && isActivitiesEndpoint) {
       console.log('Using Vite proxy for Activities endpoint:', url);
       // Don't set baseURL, let Vite proxy handle it
     }

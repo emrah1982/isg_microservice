@@ -6,6 +6,11 @@ export type Personnel = {
   id: number;
   userId?: number | null;
   nationalId?: string;
+  tcNo?: string; // Alias for nationalId
+  citizenshipType?: string; // TR | Foreign
+  nationality?: string;
+  foreignIdentityNumber?: string;
+  passportNumber?: string;
   companyId?: number | null;
   firstName: string;
   lastName: string;
@@ -15,6 +20,7 @@ export type Personnel = {
   title?: string;
   position?: string;
   startDate?: string; // ISO
+  endDate?: string; // ISO - for terminated employees
   isgTemelEgitimBelgesiTarihi?: string; // ISO
   status?: 'Active' | 'Inactive' | string;
   createdAt?: string;
@@ -92,7 +98,7 @@ export async function listPersonnel(query: PersonnelQuery = {}): Promise<Personn
   Object.entries(query).forEach(([k, v]) => {
     if (v !== undefined && v !== null && v !== '') params.append(k, String(v));
   });
-  const { data } = await axiosInstance.get(`/api/personnel${params.toString() ? `?${params}` : ''}`);
+  const { data } = await axiosInstance.get(`${PERSONNEL_BASE}/api/personnel${params.toString() ? `?${params}` : ''}`);
   // Some services wrap with { data: [...] }
   return Array.isArray(data?.data) ? data.data : Array.isArray(data) ? data : [];
 }

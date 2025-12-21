@@ -20,6 +20,7 @@ import IncidentsPage from '@pages/Incidents/IncidentsPage';
 import IncidentDetailPage from '@pages/Incidents/IncidentDetailPage';
 import ReportingPage from '@pages/Reporting/ReportingPage';
 import TetkikReportsPage from '@pages/Reporting/TetkikReportsPage';
+import LearninRepostPage from '@pages/Reporting/LearninRepostPage';
 import RiskAnalysisPage from '@pages/RiskAnalysis/RiskAnalysisPage';
 import VisionPage from '@pages/Vision/VisionPage';
 import LegislationCompliancePage from '@pages/Legislation/LegislationCompliancePage';
@@ -45,6 +46,12 @@ import ControlFormExecutionsPage from '@pages/Activities/ControlFormExecutions/C
 import FormTemplatesPage from '@pages/Activities/FormTemplatesPage';
 import RemindersPage from '@pages/Activities/RemindersPage';
 import SpecialDefinedAndIdentificationRegisterPage from '@pages/Actions/SpecialDefinedAndIdentificationRegisterPage';
+import RiskAssessmentPage from '@pages/Planning/RiskAssessmentPage';
+import EmergencyPlanPage from '@pages/Planning/EmergencyPlanPage';
+import CorporatePlanningPage from '@pages/Planning/CorporatePlanningPage';
+import AnnualWorkPlanPage from '@pages/Planning/AnnualWorkPlanPage';
+import ActivityListPage from '@pages/Planning/ActivityListPage';
+import ControlMatrixPage from '@pages/Planning/ControlMatrixPage';
 
 export default function App() {
   const { isAuthenticated } = useAuth();
@@ -190,6 +197,15 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <ReportingPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/learninRepost"
+              element={
+                <ProtectedRoute>
+                  <LearninRepostPage />
                 </ProtectedRoute>
               }
             />
@@ -380,13 +396,64 @@ export default function App() {
               }
             />
             <Route
-              path="/isg-expert"
+              path="/isgexpert"
               element={
                 <ProtectedRoute>
                   <ISGExpertPage />
                 </ProtectedRoute>
               }
             />
+            
+            {/* Planning Routes */}
+            <Route
+              path="/planning/risk-assessment"
+              element={
+                <ProtectedRoute>
+                  <RiskAssessmentPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/planning/emergency-plan"
+              element={
+                <ProtectedRoute>
+                  <EmergencyPlanPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/planning/corporate-planning"
+              element={
+                <ProtectedRoute>
+                  <CorporatePlanningPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/planning/annual-work-plan"
+              element={
+                <ProtectedRoute>
+                  <AnnualWorkPlanPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/planning/activity-list"
+              element={
+                <ProtectedRoute>
+                  <ActivityListPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/planning/control-matrix"
+              element={
+                <ProtectedRoute>
+                  <ControlMatrixPage />
+                </ProtectedRoute>
+              }
+            />
+            
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>

@@ -7,6 +7,7 @@ const Sidebar: React.FC = () => {
   const [isActionsOpen, setIsActionsOpen] = useState(false);
   const [isActivitiesOpen, setIsActivitiesOpen] = useState(false);
   const [isReportingOpen, setIsReportingOpen] = useState(false);
+  const [isPlanningOpen, setIsPlanningOpen] = useState(false);
 
   return (
     <aside className="sidebar">
@@ -143,7 +144,7 @@ const Sidebar: React.FC = () => {
             {isReportingOpen && (
               <ul id="sidebar-reporting-submenu" className="submenu">
                 <li><NavLink to="/reporting">Genel Raporlar</NavLink></li>
-                <li><NavLink to="/reporting?tab=training">Eğitim Raporu</NavLink></li>
+                <li><NavLink to="/learninRepost">Learnin Repost</NavLink></li>
                 <li><NavLink to="/reporting/tetkik">Tetkik Raporları</NavLink></li>
               </ul>
             )}
@@ -151,6 +152,34 @@ const Sidebar: React.FC = () => {
 
           <li><NavLink to="/risk-analysis">Risk Analizi</NavLink></li>
           <li><NavLink to="/non-conformities">Uygunsuzluklar</NavLink></li>
+          
+          {/* Planla alt menüsü */}
+          <li>
+            <button
+              className={`sidebar-dropbtn ${isPlanningOpen ? 'open' : ''}`}
+              onClick={() => setIsPlanningOpen(v => !v)}
+              aria-expanded={isPlanningOpen}
+              aria-controls="sidebar-planning-submenu"
+            >
+              <span>Planla</span>
+              <span className="chevron" aria-hidden="true" style={{ marginLeft: 'auto', display: 'inline-flex', alignItems: 'center' }}>
+                <svg width="12" height="12" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M1.5 3.5L5 7l3.5-3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </span>
+            </button>
+            {isPlanningOpen && (
+              <ul id="sidebar-planning-submenu" className="submenu">
+                <li><NavLink to="/planning/risk-assessment">Risk Değerlendirme</NavLink></li>
+                <li><NavLink to="/planning/emergency-plan">Acil Durum Planı</NavLink></li>
+                <li><NavLink to="/planning/corporate-planning">Kurumsal Planlama</NavLink></li>
+                <li><NavLink to="/planning/annual-work-plan">Yıllık Çalışma Planı</NavLink></li>
+                <li><NavLink to="/planning/activity-list">Faaliyet Listesi</NavLink></li>
+                <li><NavLink to="/planning/control-matrix">Kontrol Matrisi</NavLink></li>
+              </ul>
+            )}
+          </li>
+          
           <li><NavLink to="/isg-expert">İSG Uzman Asistanı</NavLink></li>
         </ul>
       </nav>
