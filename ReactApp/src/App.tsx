@@ -46,6 +46,12 @@ import ControlFormExecutionsPage from '@pages/Activities/ControlFormExecutions/C
 import FormTemplatesPage from '@pages/Activities/FormTemplatesPage';
 import RemindersPage from '@pages/Activities/RemindersPage';
 import SpecialDefinedAndIdentificationRegisterPage from '@pages/Actions/SpecialDefinedAndIdentificationRegisterPage';
+import BasicControlListPage from '@pages/Control/BasicControlListPage';
+import FieldInspectionsPage from '@pages/Control/FieldInspectionsPage';
+import WorkPermitsPage from '@pages/Control/WorkPermitsPage';
+import WorkPermitsNewPage from '@pages/Control/WorkPermitsNewPage';
+import ProjectsAndWorkOrdersPage from '@pages/Control/ProjectsAndWorkOrdersPage';
+import IsgBoardMeetingsPage from '@pages/Control/IsgBoardMeetingsPage';
 import RiskAssessmentPage from '@pages/Planning/RiskAssessmentPage';
 import EmergencyPlanPage from '@pages/Planning/EmergencyPlanPage';
 import CorporatePlanningPage from '@pages/Planning/CorporatePlanningPage';
@@ -395,11 +401,54 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
+
             <Route
               path="/isgexpert"
               element={
                 <ProtectedRoute>
                   <ISGExpertPage />
+                </ProtectedRoute>
+              }
+            />
+            
+            {/* Control (Kontrol Et) Routes */}
+            <Route
+              path="/control/basic-control-list"
+              element={
+                <ProtectedRoute>
+                  <BasicControlListPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/control/field-inspections"
+              element={
+                <ProtectedRoute>
+                  <FieldInspectionsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/control/work-permits"
+              element={
+                <ProtectedRoute>
+                  <WorkPermitsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/control/projects-work-orders"
+              element={
+                <ProtectedRoute>
+                  <ProjectsAndWorkOrdersPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/control/isg-board-meetings"
+              element={
+                <ProtectedRoute>
+                  <IsgBoardMeetingsPage />
                 </ProtectedRoute>
               }
             />

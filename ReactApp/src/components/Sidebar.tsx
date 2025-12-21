@@ -8,6 +8,7 @@ const Sidebar: React.FC = () => {
   const [isActivitiesOpen, setIsActivitiesOpen] = useState(false);
   const [isReportingOpen, setIsReportingOpen] = useState(false);
   const [isPlanningOpen, setIsPlanningOpen] = useState(false);
+  const [isControlOpen, setIsControlOpen] = useState(false);
 
   return (
     <aside className="sidebar">
@@ -152,7 +153,33 @@ const Sidebar: React.FC = () => {
 
           <li><NavLink to="/risk-analysis">Risk Analizi</NavLink></li>
           <li><NavLink to="/non-conformities">Uygunsuzluklar</NavLink></li>
-          
+
+          {/* Kontrol Et alt menüsü */}
+          <li>
+            <button
+              className={`sidebar-dropbtn ${isControlOpen ? 'open' : ''}`}
+              onClick={() => setIsControlOpen(v => !v)}
+              aria-expanded={isControlOpen}
+              aria-controls="sidebar-control-submenu"
+            >
+              <span>Kontrol Et</span>
+              <span className="chevron" aria-hidden="true" style={{ marginLeft: 'auto', display: 'inline-flex', alignItems: 'center' }}>
+                <svg width="12" height="12" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M1.5 3.5L5 7l3.5-3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </span>
+            </button>
+            {isControlOpen && (
+              <ul id="sidebar-control-submenu" className="submenu">
+                <li><NavLink to="/control/basic-control-list">Temel Kontrol Listesi</NavLink></li>
+                <li><NavLink to="/control/field-inspections">Saha Gözetimleri</NavLink></li>
+                <li><NavLink to="/control/work-permits">İş İzinleri</NavLink></li>
+                <li><NavLink to="/control/projects-work-orders">Projeler Ve İş Emirleri</NavLink></li>
+                <li><NavLink to="/control/isg-board-meetings">İSG Kurulu Toplantıları</NavLink></li>
+              </ul>
+            )}
+          </li>
+
           {/* Planla alt menüsü */}
           <li>
             <button
