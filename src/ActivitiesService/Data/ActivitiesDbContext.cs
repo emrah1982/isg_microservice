@@ -32,6 +32,7 @@ public class ActivitiesDbContext : DbContext
     public DbSet<ReminderTask> ReminderTasks => Set<ReminderTask>();
     public DbSet<ControlPlan> ControlPlans => Set<ControlPlan>();
     public DbSet<ControlPlanTarget> ControlPlanTargets => Set<ControlPlanTarget>();
+    public DbSet<FieldInspection> FieldInspections => Set<FieldInspection>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -482,6 +483,22 @@ public class ActivitiesDbContext : DbContext
                 .HasForeignKey(e => e.MachineId)
                 .OnDelete(DeleteBehavior.Cascade);
             entity.HasIndex(e => new { e.ControlPlanId, e.MachineId }).IsUnique();
+        });
+
+        // FieldInspection configuration
+        modelBuilder.Entity<FieldInspection>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Location).HasMaxLength(500).IsRequired();
+            entity.Property(e => e.HazardTitle).HasMaxLength(500).IsRequired();
+            entity.Property(e => e.HazardDescription).IsRequired();
+            entity.Property(e => e.Legislation).HasMaxLength(500);
+            entity.Property(e => e.Measures).IsRequired();
+            entity.Property(e => e.RiskTargets).HasMaxLength(100);
+            entity.Property(e => e.RiskLevel).HasMaxLength(50);
+            entity.HasIndex(e => e.Date);
+            entity.HasIndex(e => e.RiskLevel);
+            entity.HasIndex(e => new { e.CompanyId, e.Date });
         });
     }
 }

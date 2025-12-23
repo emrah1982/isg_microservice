@@ -346,3 +346,63 @@ export async function getCompanies() {
   const { data } = await axiosInstance.get('/api/personnel/companies');
   return data as { id: number; name: string; }[];
 }
+
+// Field Inspections
+export type FieldInspection = {
+  id: number;
+  companyId?: number | null;
+  date: string;
+  location: string;
+  hazardTitle: string;
+  hazardDescription: string;
+  legislation?: string;
+  measures: string;
+  riskTargets: string;
+  severity: number;
+  likelihood: number;
+  riskScore: number;
+  riskLevel: 'Dusuk' | 'Orta' | 'Yuksek' | 'Kabul Edilemez';
+  beforeImageUrl?: string;
+  afterImageUrl?: string;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export type FieldInspectionFilters = {
+  companyId?: number;
+  search?: string;
+  riskLevel?: string;
+  startDate?: string;
+  endDate?: string;
+};
+
+export async function getFieldInspections(filters?: FieldInspectionFilters) {
+  const params = new URLSearchParams();
+  if (filters?.companyId) params.append('companyId', filters.companyId.toString());
+  if (filters?.search) params.append('search', filters.search);
+  if (filters?.riskLevel) params.append('riskLevel', filters.riskLevel);
+  if (filters?.startDate) params.append('startDate', filters.startDate);
+  if (filters?.endDate) params.append('endDate', filters.endDate);
+
+  const { data } = await axiosInstance.get(`/api/fieldinspections${params.toString() ? `?${params}` : ''}`);
+  return data as FieldInspection[];
+}
+
+export async function getFieldInspection(id: number) {
+  const { data } = await axiosInstance.get(`/api/fieldinspections/${id}`);
+  return data as FieldInspection;
+}
+
+export async function createFieldInspection(payload: Omit<FieldInspection, 'id' | 'riskScore' | 'createdAt' | 'updatedAt'>) {
+  const { data } = await axiosInstance.post('/api/fieldinspections', payload);
+  return data as FieldInspection;
+}
+
+export async function updateFieldInspection(id: number, payload: Omit<FieldInspection, 'createdAt' | 'updatedAt'>) {
+  const { data } = await axiosInstance.put(`/api/fieldinspections/${id}`, payload);
+  return data as FieldInspection;
+}
+
+export async function deleteFieldInspection(id: number) {
+  await axiosInstance.delete(`/api/fieldinspections/${id}`);
+}

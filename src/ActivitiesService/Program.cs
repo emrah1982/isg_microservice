@@ -127,11 +127,22 @@ catch { }
 // Do not hardcode a port here. In container, we rely on ASPNETCORE_URLS env (default set to http://+:8091)
 // and Docker port mapping (e.g., -p 8093:8091). Adding a fixed URL like 8093 causes a port mismatch.
 
-// Ensure DB (commented out for now to avoid connection issues)
-// using (var scope = app.Services.CreateScope())
-// {
-//     var db = scope.ServiceProvider.GetRequiredService<ActivitiesDbContext>();
-//     await db.Database.MigrateAsync();
-// }
+// Ensure DB migrations
+if (!useMock)
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        try
+        {
+            var db = scope.ServiceProvider.GetRequiredService<ActivitiesDbContext>();
+            await db.Database.MigrateAsync();
+            app.Logger.LogInformation("Database migrations applied successfully");
+        }
+        catch (Exception ex)
+        {
+            app.Logger.LogError(ex, "Error applying database migrations");
+        }
+    }
+}
 
 await app.RunAsync();

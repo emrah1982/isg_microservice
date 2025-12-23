@@ -64,6 +64,7 @@ function resolveServiceBase(pathname: string): string {
     case 'controlformtemplates':
     case 'machines':
     case 'reminders':
+    case 'fieldinspections':
       return 'http://localhost:8091';
     case 'ppeitems':
     case 'ppeassignments':
