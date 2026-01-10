@@ -11,6 +11,8 @@ public class TrainingsDbContext : DbContext
     
     public DbSet<Training> Trainings { get; set; }
     public DbSet<UserTraining> UserTrainings { get; set; }
+    public DbSet<TrainingSession> TrainingSessions { get; set; }
+    public DbSet<SessionParticipant> SessionParticipants { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -71,6 +73,31 @@ public class TrainingsDbContext : DbContext
         
         modelBuilder.Entity<UserTraining>().Ignore(e => e.IsDeleted);
         modelBuilder.Entity<UserTraining>().Ignore(e => e.DeletedAt);
+
+        // TrainingSession configuration
+        modelBuilder.Entity<TrainingSession>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.TrainingId);
+            entity.HasIndex(e => e.SessionDate);
+            
+            entity.HasOne(e => e.Training)
+                  .WithMany()
+                  .HasForeignKey(e => e.TrainingId)
+                  .OnDelete(DeleteBehavior.Cascade);
+        });
+        
+        // SessionParticipant configuration
+        modelBuilder.Entity<SessionParticipant>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => new { e.SessionId, e.PersonnelId });
+            
+            entity.HasOne(e => e.Session)
+                  .WithMany(s => s.Participants)
+                  .HasForeignKey(e => e.SessionId)
+                  .OnDelete(DeleteBehavior.Cascade);
+        });
 
         // Seed data removed - using SQL script instead
     }

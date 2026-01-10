@@ -14,6 +14,36 @@ export type Training = {
   participantCount?: number;
 };
 
+export type Session = {
+  id: number;
+  trainingId: number;
+  trainingTitle: string;
+  sessionDate: string;
+  sessionEndDate?: string;
+  branch?: string;
+  location?: string;
+  instructor?: string;
+  passScore?: number;
+  maxParticipants?: number;
+  notes?: string;
+  isActive: boolean;
+  participantCount: number;
+  createdAt: string;
+  updatedAt?: string;
+};
+
+export type SessionCreateDto = {
+  trainingId: number;
+  sessionDate: string;
+  sessionEndDate?: string;
+  branch?: string;
+  location?: string;
+  instructor?: string;
+  passScore?: number;
+  maxParticipants?: number;
+  notes?: string;
+};
+
 // Backend generic response wrapper
 type ApiResponse<T> = {
   success: boolean;
@@ -57,14 +87,62 @@ const mapTraining = (t: BackendTraining): Training => ({
 });
 
 export async function fetchTrainings(): Promise<Training[]> {
-  const { data } = await axiosInstance.get<ApiResponse<BackendTraining[]>>('http://localhost:8081/api/trainings');
+  // Relative URL kullanarak axiosInstance'ın microservice yönlendirmesini devreye sok
+  const { data } = await axiosInstance.get<ApiResponse<BackendTraining[]>>('/api/trainings');
   const list = Array.isArray(data?.data) ? data.data : [];
   return list.map(mapTraining);
 }
 
+// Session CRUD operations
+export async function fetchSessions(): Promise<Session[]> {
+  const { data } = await axiosInstance.get<ApiResponse<Session[]>>('/api/training-sessions');
+  return Array.isArray(data?.data) ? data.data : [];
+}
+
+export async function fetchSessionById(id: number): Promise<Session> {
+  const { data } = await axiosInstance.get<ApiResponse<Session>>(`/api/training-sessions/${id}`);
+  return data.data;
+}
+
+export async function createSession(dto: SessionCreateDto): Promise<Session> {
+  const { data } = await axiosInstance.post<ApiResponse<Session>>('/api/training-sessions', dto);
+  return data.data;
+}
+
+export async function updateSession(id: number, dto: SessionCreateDto): Promise<Session> {
+  const { data } = await axiosInstance.put<ApiResponse<Session>>(`/api/training-sessions/${id}`, dto);
+  return data.data;
+}
+
+export async function deleteSession(id: number): Promise<void> {
+  await axiosInstance.delete(`/api/training-sessions/${id}`);
+}
+
+export async function updateSessionPassScore(sessionId: number, passScore: number): Promise<void> {
+  await axiosInstance.post(`/api/training-sessions/${sessionId}/pass-score`, { passScore });
+}
+
+// Session Participants operations
+export async function assignParticipantsToSession(sessionId: number, participantIds: number[], trainingDate?: string): Promise<void> {
+  await axiosInstance.post(`/api/training-sessions/${sessionId}/participants`, { 
+    participantIds,
+    trainingDate: trainingDate || null
+  });
+}
+
+export async function getSessionParticipants(sessionId: number): Promise<any[]> {
+  const { data } = await axiosInstance.get<ApiResponse<any[]>>(`/api/training-sessions/${sessionId}/participants`);
+  return Array.isArray(data?.data) ? data.data : [];
+}
+
+export async function removeParticipantFromSession(sessionId: number, personnelId: number): Promise<void> {
+  await axiosInstance.delete(`/api/training-sessions/${sessionId}/participants/${personnelId}`);
+}
+
 export async function fetchTrainingById(id: string): Promise<Training> {
   try {
-    const { data } = await axiosInstance.get<ApiResponse<BackendTraining>>(`http://localhost:8081/api/trainings/${id}`);
+    // Tekil kayıt için de relative URL kullan
+    const { data } = await axiosInstance.get<ApiResponse<BackendTraining>>(`/api/trainings/${id}`);
     return mapTraining(data.data);
   } catch (err: any) {
     // 404 ise fallback: tüm eğitimleri çekip arama

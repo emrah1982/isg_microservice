@@ -22,9 +22,11 @@ builder.Services.AddDbContext<TrainingsDbContext>(options =>
 // Repository registration
 builder.Services.AddScoped<ITrainingRepository, TrainingRepository>();
 builder.Services.AddScoped<IUserTrainingRepository, UserTrainingRepository>();
+builder.Services.AddScoped<ITrainingSessionRepository, TrainingSessionRepository>();
 
 // Service registration
 builder.Services.AddScoped<ITrainingService, TrainingService>();
+builder.Services.AddScoped<ITrainingSessionService, TrainingSessionService>();
 
 // HttpClient for UsersService communication
 builder.Services.AddHttpClient<IUsersServiceClient, UsersServiceClient>(client =>
@@ -111,15 +113,12 @@ builder.Services.AddSwaggerGen(c =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "İSG Trainings Service API v1");
-        c.RoutePrefix = string.Empty; // Swagger UI at root
-    });
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "İSG Trainings Service API v1");
+    c.RoutePrefix = "swagger"; // Swagger UI at /swagger
+});
 
 app.UseCors("AllowAll");
 

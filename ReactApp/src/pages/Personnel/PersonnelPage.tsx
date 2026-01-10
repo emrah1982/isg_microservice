@@ -356,7 +356,8 @@ export default function PersonnelPage() {
                   <th style={{ textAlign: 'left', padding: '12px 20px', background: '#f9fafb', borderBottom: '1px solid #e5e7eb', fontSize: 13, fontWeight: 600, color: '#374151', width: '180px' }}>Firma</th>
                   <th style={{ textAlign: 'left', padding: '12px 20px', background: '#f9fafb', borderBottom: '1px solid #e5e7eb', fontSize: 13, fontWeight: 600, color: '#374151', width: '150px' }}>Departman</th>
                   <th style={{ textAlign: 'left', padding: '12px 20px', background: '#f9fafb', borderBottom: '1px solid #e5e7eb', fontSize: 13, fontWeight: 600, color: '#374151', width: '150px' }}>Ünvan</th>
-                  <th style={{ textAlign: 'left', padding: '12px 20px', background: '#f9fafb', borderBottom: '1px solid #e5e7eb', fontSize: 13, fontWeight: 600, color: '#374151', width: '220px' }}>E-posta</th>
+                  <th style={{ textAlign: 'left', padding: '12px 20px', background: '#f9fafb', borderBottom: '1px solid #e5e7eb', fontSize: 13, fontWeight: 600, color: '#374151', width: '150px' }}>İşe Giriş</th>
+                  <th style={{ textAlign: 'left', padding: '12px 20px', background: '#f9fafb', borderBottom: '1px solid #e5e7eb', fontSize: 13, fontWeight: 600, color: '#374151', width: '150px' }}>Eğitim Tarihi</th>
                   <th style={{ textAlign: 'left', padding: '12px 20px', background: '#f9fafb', borderBottom: '1px solid #e5e7eb', fontSize: 13, fontWeight: 600, color: '#374151', width: '150px' }}>TC No</th>
                   <th style={{ textAlign: 'left', padding: '12px 20px', background: '#f9fafb', borderBottom: '1px solid #e5e7eb', fontSize: 13, fontWeight: 600, color: '#374151', width: '150px' }}>Telefon</th>
                   <th style={{ textAlign: 'left', padding: '12px 20px', background: '#f9fafb', borderBottom: '1px solid #e5e7eb', fontSize: 13, fontWeight: 600, color: '#374151', width: '100px' }}>Durum</th>
@@ -366,7 +367,7 @@ export default function PersonnelPage() {
               <tbody>
                 {list.length === 0 ? (
                   <tr>
-                    <td colSpan={9} style={{ padding: 40, textAlign: 'center', color: '#6b7280', fontSize: 16 }}>
+                    <td colSpan={10} style={{ padding: 40, textAlign: 'center', color: '#6b7280', fontSize: 16 }}>
                       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
                         <div style={{ fontSize: 48 }}>👥</div>
                         <div>Henüz personel kaydı bulunmuyor</div>
@@ -406,8 +407,11 @@ export default function PersonnelPage() {
                     <td style={{ padding: '12px 20px', fontSize: 14, color: '#374151', width: '150px' }}>
                       {p.title || '—'}
                     </td>
-                    <td style={{ padding: '12px 20px', fontSize: 14, color: '#374151', width: '220px' }}>
-                      {p.email || '—'}
+                    <td style={{ padding: '12px 20px', fontSize: 14, color: '#374151', width: '150px' }}>
+                      {p.startDate ? new Date(p.startDate).toLocaleDateString('tr-TR') : '—'}
+                    </td>
+                    <td style={{ padding: '12px 20px', fontSize: 14, color: '#374151', width: '150px' }}>
+                      {p.isgTemelEgitimBelgesiTarihi ? new Date(p.isgTemelEgitimBelgesiTarihi).toLocaleDateString('tr-TR') : '—'}
                     </td>
                     <td style={{ padding: '12px 20px', fontSize: 13, color: '#374151', fontFamily: 'monospace', width: '150px' }}>
                       {p.nationalId || '—'}

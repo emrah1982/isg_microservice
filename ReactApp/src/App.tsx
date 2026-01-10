@@ -7,6 +7,11 @@ import UsersPage from '@pages/Users/UsersPage';
 import UserDetailPage from '@pages/Users/UserDetailPage';
 import TrainingsPage from '@pages/Trainings/TrainingsPage';
 import TrainingDetailPage from '@pages/Trainings/TrainingDetailPage';
+import TrainingTopicsPage from '@pages/Trainings/TrainingTopicsPage';
+import TrainingCertificatesPage from '@pages/Trainings/TrainingCertificatesPage';
+import TrainingBulkPage from '@pages/Trainings/TrainingBulkPage';
+import TrainingResultsPage from '@pages/Trainings/TrainingResultsPage';
+import TrainingSessionsPage from '@pages/Trainings/TrainingSessionsPage';
 import PersonnelPage from '@pages/Personnel/PersonnelPage';
 import PersonnelDocumentsPage from '@pages/Personnel/PersonnelDocumentsPage';
 import PersonnelBlacklistPage from '@pages/Personnel/PersonnelBlacklistPage';
@@ -119,16 +124,53 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
+            {/* Trainings routes */}
             <Route
               path="/trainings"
+              element={<Navigate to="/trainings/topics" replace />}
+            />
+            <Route
+              path="/trainings/topics"
               element={
                 <ProtectedRoute>
-                  <TrainingsPage />
+                  <TrainingTopicsPage />
                 </ProtectedRoute>
               }
             />
             <Route
-              path="/trainings/:id"
+              path="/trainings/certificates"
+              element={
+                <ProtectedRoute>
+                  <TrainingCertificatesPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/trainings/bulk"
+              element={
+                <ProtectedRoute>
+                  <TrainingBulkPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/trainings/results"
+              element={
+                <ProtectedRoute>
+                  <TrainingResultsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/trainings/sessions"
+              element={
+                <ProtectedRoute>
+                  <TrainingSessionsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/trainings/detail/:id"
               element={
                 <ProtectedRoute>
                   <TrainingDetailPage />

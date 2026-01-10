@@ -23,7 +23,8 @@ export async function createExam(payload: any): Promise<Exam> {
 
 export type TrainingSummary = { id: number; title: string };
 export async function getTrainings(): Promise<TrainingSummary[]> {
-  const { data } = await axiosInstance.get('http://localhost:8081/api/trainings');
+  // TrainingsService için relative URL kullan
+  const { data } = await axiosInstance.get('/api/trainings');
   // TrainingsService returns ApiResponse
   const list = Array.isArray(data?.data) ? data.data : [];
   return list.map((t: any) => ({ id: t.id, title: t.title }));

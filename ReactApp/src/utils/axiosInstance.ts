@@ -18,6 +18,7 @@ function resolveServiceBase(pathname: string): string {
     case 'users':
       return 'http://localhost:8080';
     case 'trainings':
+    case 'training-sessions':
       return 'http://localhost:8081';
     case 'risks':
       return 'http://localhost:18082';

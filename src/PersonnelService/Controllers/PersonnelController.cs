@@ -203,6 +203,7 @@ public class PersonnelController : ControllerBase
         p.Title = dto.Title;
         p.Position = dto.Position;
         p.StartDate = dto.StartDate;
+        p.IsgTemelEgitimBelgesiTarihi = dto.IsgTemelEgitimBelgesiTarihi;
         p.Status = string.IsNullOrWhiteSpace(dto.Status) ? p.Status : dto.Status;
         p.UpdatedAt = DateTime.UtcNow;
         

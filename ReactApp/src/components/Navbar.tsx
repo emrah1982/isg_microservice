@@ -8,8 +8,10 @@ const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
   const [isPpeOpen, setIsPpeOpen] = useState(false);
   const [isExamsOpen, setIsExamsOpen] = useState(false);
+  const [isTrainingsOpen, setIsTrainingsOpen] = useState(false);
   const ppeRef = useRef<HTMLDivElement | null>(null);
   const examsRef = useRef<HTMLDivElement | null>(null);
+  const trainingsRef = useRef<HTMLDivElement | null>(null);
 
   const handleLogout = () => {
     logout();
@@ -22,11 +24,13 @@ const Navbar: React.FC = () => {
       const target = e.target as Node;
       const clickedOutsidePpe = ppeRef.current && !ppeRef.current.contains(target);
       const clickedOutsideExams = examsRef.current && !examsRef.current.contains(target);
+      const clickedOutsideTrainings = trainingsRef.current && !trainingsRef.current.contains(target);
       if (clickedOutsidePpe) setIsPpeOpen(false);
       if (clickedOutsideExams) setIsExamsOpen(false);
+      if (clickedOutsideTrainings) setIsTrainingsOpen(false);
     };
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') { setIsPpeOpen(false); setIsExamsOpen(false); }
+      if (e.key === 'Escape') { setIsPpeOpen(false); setIsExamsOpen(false); setIsTrainingsOpen(false); }
     };
     document.addEventListener('click', handleClickOutside);
     document.addEventListener('keydown', handleKey);
@@ -76,7 +80,32 @@ const Navbar: React.FC = () => {
             <Link to="/exam-assignments" role="menuitem" onClick={() => setIsExamsOpen(false)}>Sınav Ataması</Link>
           </div>
         </div>
-        <Link to="/trainings">Eğitimler</Link>
+        {/* Trainings Dropdown - click-to-open */}
+        <div
+          className={`dropdown ${isTrainingsOpen ? 'open' : ''}`}
+          ref={trainingsRef}
+        >
+          <button
+            className="dropbtn"
+            aria-haspopup="true"
+            aria-expanded={isTrainingsOpen}
+            onClick={(e) => { e.preventDefault(); setIsTrainingsOpen(v => !v); }}
+          >
+            Eğitimler
+            <span className="chevron" aria-hidden="true" style={{ marginLeft: 6, display: 'inline-flex', alignItems: 'center' }}>
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1.5 3.5L5 7l3.5-3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </span>
+          </button>
+          <div className="dropdown-content" role="menu">
+            <Link to="/trainings/topics" role="menuitem" onClick={() => setIsTrainingsOpen(false)}>Konularına Göre Eğitim</Link>
+            <Link to="/trainings/certificates" role="menuitem" onClick={() => setIsTrainingsOpen(false)}>Sertifika Basma</Link>
+            <Link to="/trainings/bulk" role="menuitem" onClick={() => setIsTrainingsOpen(false)}>Toplu Eğitim Düzenleme</Link>
+            <Link to="/trainings/results" role="menuitem" onClick={() => setIsTrainingsOpen(false)}>Sınav Sonuçları Takip</Link>
+            <Link to="/trainings/sessions" role="menuitem" onClick={() => setIsTrainingsOpen(false)}>Eğitim Oturum Düzenleyebilme</Link>
+          </div>
+        </div>
         <Link to="/documents">Dökümanlar</Link>
         <Link to="/incidents">Olaylar</Link>
         <Link to="/reporting">Raporlama</Link>

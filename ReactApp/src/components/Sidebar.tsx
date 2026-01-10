@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom';
 
 const Sidebar: React.FC = () => {
   const [isExamsOpen, setIsExamsOpen] = useState(false);
+  const [isTrainingsOpen, setIsTrainingsOpen] = useState(false);
   const [isHrOpen, setIsHrOpen] = useState(false);
   const [isActionsOpen, setIsActionsOpen] = useState(false);
   const [isActivitiesOpen, setIsActivitiesOpen] = useState(false);
@@ -16,7 +17,31 @@ const Sidebar: React.FC = () => {
     <aside className="sidebar">
       <nav>
         <ul>
-          <li><NavLink to="/trainings">Eğitimler</NavLink></li>
+          {/* Eğitimler alt menüsü */}
+          <li>
+            <button
+              className={`sidebar-dropbtn ${isTrainingsOpen ? 'open' : ''}`}
+              onClick={() => setIsTrainingsOpen(v => !v)}
+              aria-expanded={isTrainingsOpen}
+              aria-controls="sidebar-trainings-submenu"
+            >
+              <span>Eğitimler</span>
+              <span className="chevron" aria-hidden="true" style={{ marginLeft: 'auto', display: 'inline-flex', alignItems: 'center' }}>
+                <svg width="12" height="12" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M1.5 3.5L5 7l3.5-3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </span>
+            </button>
+            {isTrainingsOpen && (
+              <ul id="sidebar-trainings-submenu" className="submenu">
+                <li><NavLink to="/trainings/topics">Konularına Göre Eğitim</NavLink></li>
+                <li><NavLink to="/trainings/certificates">Sertifika Basma</NavLink></li>
+                <li><NavLink to="/trainings/bulk">Toplu Eğitim Düzenleme</NavLink></li>
+                <li><NavLink to="/trainings/results">Sınav Sonuçları Takip</NavLink></li>
+                <li><NavLink to="/trainings/sessions">Eğitim Oturum Düzenleyebilme</NavLink></li>
+              </ul>
+            )}
+          </li>
 
           {/* Sınav alt menüsü */}
           <li>

@@ -55,7 +55,8 @@ export default function TrainingsPage() {
         date: new Date().toISOString() // Current date as training date
       };
       
-      await axiosInstance.post('http://localhost:8081/api/trainings', payload);
+      // Relative URL kullanarak axiosInstance'in microservice yönlendirmesini devreye sok
+      await axiosInstance.post('/api/trainings', payload);
       
       // Reset form and close
       setFormData({
@@ -91,7 +92,7 @@ export default function TrainingsPage() {
     { key: 'isActive', header: 'Aktif', render: (t: any) => (t.isActive ? 'Evet' : 'Hayır') },
     { key: 'participantCount', header: 'Katılımcı' },
     { key: 'date', header: 'Tarih', render: (t: any) => fmtDate(t.date) },
-    { key: 'actions', header: 'İşlem', render: (t: any) => <Link to={`/trainings/${t.id}`}>Detay</Link> },
+    { key: 'actions', header: 'İşlem', render: (t: any) => <Link to={`/trainings/detail/${t.id}`}>Detay</Link> },
   ];
 
   return (
